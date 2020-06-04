@@ -1,4 +1,12 @@
 import React from 'react';
-import { Providers } from './providers/Providers';
+import { Text } from 'react-native';
 
-export default Providers;
+
+export default function() {
+    
+    return (
+        <Text>
+            Welcome to the app.
+        </Text>
+    )
+}
