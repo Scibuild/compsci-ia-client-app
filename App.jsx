@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Text, Button } from "react-native";
-import { Center } from "./src/assets/formatted";
+import { Center } from "./src/components/formatted";
 
 export default function App() {
   const [state, setState] = useState(false);
