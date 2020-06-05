@@ -7,15 +7,20 @@ const RANDOMNUMBERS = Array(50)
   .fill()
   .map(() => ({ num: Math.floor(Math.random() * 100) }));
 
-export const SdieEffectHistoryScreen = () => {
+export const SdieEffectHistoryScreen = ({ navigation }) => {
   return (
     <View>
       <FlatList
         data={RANDOMNUMBERS}
         renderItem={({ item, index }) => (
-          <SideEffectListItem name={item.num} id={index} />
+          <SideEffectListItem
+            name={item.num}
+            id={index}
+            navigation={navigation}
+          />
         )}
         ItemSeparatorComponent={ItemSeparator}
+        keyExtractor={(item, index) => index.toString()}
       />
     </View>
   );

@@ -12,7 +12,12 @@ export const Center = ({ children }) => {
 
 export const SideEffectListItem = ({ name, id, navigation }) => {
   return (
-    <RectButton style={styles.listItemTouchable}>
+    <RectButton
+      style={styles.listItemTouchable}
+      onPress={() => {
+        navigation.navigate("EditSideEffect");
+      }}
+    >
       <Text style={styles.listItemText}>{name}</Text>
     </RectButton>
   );
