@@ -1,21 +1,43 @@
-import React from "react";
-import { View, Text } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
-import { SideEffectListItem, ItemSeparator } from "../components/formatted";
+import React, { useContext } from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { FlatList, RectButton } from "react-native-gesture-handler";
+import { ItemSeparator } from "../components/formatted";
+import { SideEffectContext } from "../providers/SymptomsProvider";
 
-const RANDOMNUMBERS = Array(50)
-  .fill()
-  .map(() => ({ num: Math.floor(Math.random() * 100) }));
+export const SideEffectListItem = ({ name, id, index, navigation }) => {
+  return (
+    <RectButton
+      style={styles.listItemTouchable}
+      onPress={() => {
+        navigation.navigate("EditSideEffect", { name, id, index });
+      }}
+    >
+      <Text style={styles.listItemText}>{name}</Text>
+    </RectButton>
+  );
+};
 
-export const SdieEffectHistoryScreen = ({ navigation }) => {
+const styles = StyleSheet.create({
+  listItemTouchable: {
+    padding: 15,
+  },
+  listItemText: {
+    fontSize: 20,
+  },
+});
+
+export const SideEffectHistoryScreen = ({ navigation }) => {
+  const { state } = useContext(SideEffectContext);
+
   return (
     <View>
       <FlatList
-        data={RANDOMNUMBERS}
+        data={state}
         renderItem={({ item, index }) => (
           <SideEffectListItem
-            name={item.num}
-            id={index}
+            name={item.name}
+            id={item.id}
+            index={index}
             navigation={navigation}
           />
         )}

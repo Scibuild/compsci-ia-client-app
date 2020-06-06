@@ -10,19 +10,6 @@ export const Center = ({ children }) => {
   return <View style={styles.centered}>{children}</View>;
 };
 
-export const SideEffectListItem = ({ name, id, navigation }) => {
-  return (
-    <RectButton
-      style={styles.listItemTouchable}
-      onPress={() => {
-        navigation.navigate("EditSideEffect");
-      }}
-    >
-      <Text style={styles.listItemText}>{name}</Text>
-    </RectButton>
-  );
-};
-
 export const ItemSeparator = () => <View style={styles.separator} />;
 
 const styles = StyleSheet.create({
