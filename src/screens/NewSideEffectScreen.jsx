@@ -7,6 +7,7 @@ import {
   KeyboardAvoidingView,
   Slider,
   Platform,
+  Dimensions,
 } from "react-native";
 import { Button } from "react-native";
 import { SideEffectContext } from "../providers/SideEffectsProvider";
@@ -17,11 +18,16 @@ const DateTimePickerCP = ({ value, onChange }) => {
   const [mode, setMode] = useState("time");
 
   const ios = Platform.OS === "ios";
-  const iosTimeButton = !ios || mode === "time";
-  const iosDateButton = !ios || mode === "date";
+  const iosTimeButton = !ios || mode === "date";
+  const iosDateButton = !ios || mode === "time";
 
   return (
-    <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
+    <View
+      style={{
+        flexDirection: ios ? "column" : "row",
+        justifyContent: "space-evenly",
+      }}
+    >
       {iosTimeButton && (
         <Button
           title="Set Time"
@@ -40,18 +46,20 @@ const DateTimePickerCP = ({ value, onChange }) => {
           }}
         />
       )}
-      {ios ||
-        (show && (
-          <DateTimePicker
-            value={value}
-            onChange={(e, t) => {
-              setShow(false);
-              onChange(e, t);
-            }}
-            mode={mode}
-            display={mode === "time" ? "clock" : "calendar"}
-          />
-        ))}
+      {(ios || show) && (
+        <DateTimePicker
+          style={styles.datetimepicker}
+          value={value}
+          onChange={(e, t) => {
+            setShow(false);
+            onChange(e, t);
+          }}
+          mode={mode}
+          display="default"
+          maximumDate={new Date()}
+          is24hour={false}
+        />
+      )}
     </View>
   );
 };
@@ -104,6 +112,7 @@ export const NewSideEffectScreen = ({ navigation }) => {
         />
         <Button
           title="Submit"
+          style={styles.submit}
           onPress={() => {
             if (name && time && severity) {
               addSideEffect({
@@ -126,6 +135,7 @@ export const NewSideEffectScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+    width: Math.max(Dimensions.get("window").width, 200),
   },
   wrapper: {
     flex: 1,
@@ -136,6 +146,7 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 5,
     fontSize: 20,
+    alignSelf: "stretch",
   },
   slider: {
     marginTop: 0,
@@ -147,5 +158,13 @@ const styles = StyleSheet.create({
     padding: 5,
     paddingBottom: 0,
     fontSize: 20,
+  },
+  datetimepicker: {
+    backgroundColor: "white",
+    zIndex: 10,
+    alignSelf: "center",
+  },
+  submit: {
+    alignSelf: "center",
   },
 });
