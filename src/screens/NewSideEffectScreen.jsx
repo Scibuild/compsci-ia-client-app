@@ -12,35 +12,48 @@ import { Button } from "react-native";
 import { SideEffectContext } from "../providers/SideEffectsProvider";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
-const TimePickerCP = ({ value, onChange }) => {
+const DateTimePickerCP = ({ value, onChange }) => {
   const [show, setShow] = useState(false);
-  if (Platform.OS == "android") {
-    return (
-      <>
-        <Button title="Set Time" onPress={() => setShow(true)} />
-        {show && (
+  const [mode, setMode] = useState("time");
+
+  const ios = Platform.OS === "ios";
+  const iosTimeButton = !ios || mode === "time";
+  const iosDateButton = !ios || mode === "date";
+
+  return (
+    <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
+      {iosTimeButton && (
+        <Button
+          title="Set Time"
+          onPress={() => {
+            setMode("time");
+            setShow(true);
+          }}
+        />
+      )}
+      {iosDateButton && (
+        <Button
+          title="Set Date"
+          onPress={() => {
+            setMode("date");
+            setShow(true);
+          }}
+        />
+      )}
+      {ios ||
+        (show && (
           <DateTimePicker
             value={value}
             onChange={(e, t) => {
               setShow(false);
               onChange(e, t);
             }}
-            mode="time"
-            display="default"
+            mode={mode}
+            display={mode === "time" ? "clock" : "calendar"}
           />
-        )}
-      </>
-    );
-  } else {
-    return (
-      <DateTimePicker
-        value={value}
-        onChange={onChange}
-        mode="time"
-        display="default"
-      />
-    );
-  }
+        ))}
+    </View>
+  );
 };
 
 export const NewSideEffectScreen = ({ navigation }) => {
@@ -74,7 +87,7 @@ export const NewSideEffectScreen = ({ navigation }) => {
           underlineColorAndroid={errTime ? "red" : "teal"}
           style={styles.textInput}
         /> */}
-        <TimePickerCP
+        <DateTimePickerCP
           value={time}
           onChange={(_, t) => {
             setTime(t || time);
