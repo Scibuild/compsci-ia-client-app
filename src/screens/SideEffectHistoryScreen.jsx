@@ -2,7 +2,8 @@ import React, { useContext } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { FlatList, RectButton } from "react-native-gesture-handler";
 import { ItemSeparator } from "../components/formatted";
-import { SideEffectContext } from "../providers/SymptomsProvider";
+import { SideEffectContext } from "../providers/SideEffectsProvider";
+import { AddButton } from "../components/AddButton";
 
 export const SideEffectListItem = ({ name, id, index, navigation }) => {
   return (
@@ -12,7 +13,9 @@ export const SideEffectListItem = ({ name, id, index, navigation }) => {
         navigation.navigate("EditSideEffect", { name, id, index });
       }}
     >
-      <Text style={styles.listItemText}>{name}</Text>
+      <View accessible>
+        <Text style={styles.listItemText}>{name}</Text>
+      </View>
     </RectButton>
   );
 };
@@ -30,7 +33,7 @@ export const SideEffectHistoryScreen = ({ navigation }) => {
   const { state } = useContext(SideEffectContext);
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <FlatList
         data={state}
         renderItem={({ item, index }) => (
@@ -44,6 +47,7 @@ export const SideEffectHistoryScreen = ({ navigation }) => {
         ItemSeparatorComponent={ItemSeparator}
         keyExtractor={(item, index) => index.toString()}
       />
+      <AddButton onPress={() => navigation.navigate("NewSideEffect")} />
     </View>
   );
 };

@@ -27,6 +27,8 @@ function reducer(state, action) {
       return addSideEffect(state, action);
     case "init-sideeffects":
       return action.payload;
+    case "deleteid-sideeffect":
+      return state.filter((item) => item.id !== action.id);
   }
 }
 
@@ -76,14 +78,16 @@ export const SideEffectsProvider = ({ children }) => {
 
   useEffect(() => {
     AsyncStorage.getItem("side-effects").then((storedState) => {
-      if (storedState) {
+      if (storedState && isCurrent.current) {
         dispatch({
           type: "init-sideeffects",
           payload: JSON.parse(storedState),
         });
       }
     });
+    isCurrent.current = true;
 
+    // runs when component unmounts to prevent state being set when doesn't exist
     return () => {
       isCurrent.current = false;
     };
@@ -107,6 +111,11 @@ export const SideEffectsProvider = ({ children }) => {
         editSideEffect: (payload) => {
           if (isCurrent.current) {
             dispatch({ type: "edit-sideeffect", payload });
+          }
+        },
+        deleteSideEffectById: (id) => {
+          if (isCurrent.current) {
+            dispatch({ type: "deleteid-sideeffect", id });
           }
         },
       }}
