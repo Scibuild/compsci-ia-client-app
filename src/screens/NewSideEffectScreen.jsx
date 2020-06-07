@@ -21,16 +21,19 @@ const DateTimePickerCP = ({ value, onChange }) => {
   const iosTimeButton = !ios || mode === "date";
   const iosDateButton = !ios || mode === "time";
 
+  const buttonText = ios ? "Swap to " : "Set ";
+
   return (
     <View
       style={{
         flexDirection: ios ? "column" : "row",
         justifyContent: "space-evenly",
+        alignItems: "center",
       }}
     >
       {iosTimeButton && (
         <Button
-          title="Set Time"
+          title={buttonText + "Time"}
           onPress={() => {
             setMode("time");
             setShow(true);
@@ -39,7 +42,7 @@ const DateTimePickerCP = ({ value, onChange }) => {
       )}
       {iosDateButton && (
         <Button
-          title="Set Date"
+          title={buttonText + "Date"}
           onPress={() => {
             setMode("date");
             setShow(true);
@@ -56,8 +59,8 @@ const DateTimePickerCP = ({ value, onChange }) => {
           }}
           mode={mode}
           display="default"
-          maximumDate={new Date()}
-          is24hour={false}
+          // maximumDate={new Date(2300, 10, 20)}
+          is24hour={true}
         />
       )}
     </View>
@@ -75,10 +78,10 @@ export const NewSideEffectScreen = ({ navigation }) => {
 
   return (
     <KeyboardAvoidingView
-      contentContainerStyle={{ flex: 1 }}
-      behavior="padding"
+      contentContainerStyle={styles.wrapper}
+      behavior={Platform.OS === "ios" ? "height" : "padding"}
       enabled
-      keyboardVerticalOffset={10}
+      keyboardVerticalOffset={40}
     >
       <ScrollView contentContainerStyle={styles.container}>
         <TextInput
@@ -88,13 +91,6 @@ export const NewSideEffectScreen = ({ navigation }) => {
           underlineColorAndroid={errName ? "red" : "teal"}
           style={styles.textInput}
         />
-        {/* <TextInput
-          onChangeText={setTime}
-          value={time}
-          placeholder="When was this"
-          underlineColorAndroid={errTime ? "red" : "teal"}
-          style={styles.textInput}
-        /> */}
         <DateTimePickerCP
           value={time}
           onChange={(_, t) => {
@@ -105,28 +101,31 @@ export const NewSideEffectScreen = ({ navigation }) => {
         <Slider
           maximumValue={10}
           minimumValue={0}
-          step={1}
+          step={Platform.OS === "ios" ? 0 : 1}
           onSlidingComplete={(val) => setSeverity(val)}
           value={severity}
           style={styles.slider}
         />
-        <Button
-          title="Submit"
-          style={styles.submit}
-          onPress={() => {
-            if (name && time && severity) {
-              addSideEffect({
-                name,
-                instance: { time: time.getTime(), severity },
-              });
-              navigation.goBack();
-            } else {
-              setErrName(!name);
-              // setErrTime(!time);
-              // setErrSeverity(!severity);
-            }
-          }}
-        />
+        <View style={styles.submit}>
+          <Button
+            title="Submit"
+            style={styles.submit}
+            onPress={() => {
+              if (name && time && severity) {
+                addSideEffect({
+                  name,
+                  instance: {
+                    time: time.getTime(),
+                    severity: Math.round(severity),
+                  },
+                });
+                navigation.goBack();
+              } else {
+                setErrName(!name);
+              }
+            }}
+          />
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -135,22 +134,35 @@ export const NewSideEffectScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    width: Math.max(Dimensions.get("window").width, 200),
+    paddingHorizontal: Platform.isPad ? 200 : 20,
+    justifyContent: "center",
+    // height: "100%",
   },
   wrapper: {
     flex: 1,
-    flexDirection: "column",
     justifyContent: "center",
+    alignItems: "center",
   },
   textInput: {
     margin: 10,
     padding: 5,
     fontSize: 20,
     alignSelf: "stretch",
+
+    ...Platform.select({
+      ios: {
+        borderColor: "grey",
+        borderWidth: 1,
+        borderRadius: 4,
+      },
+      android: {},
+    }),
   },
   slider: {
     marginTop: 0,
     marginBottom: 20,
+
+    alignSelf: "stretch",
   },
   text: {
     margin: 10,
@@ -158,13 +170,14 @@ const styles = StyleSheet.create({
     padding: 5,
     paddingBottom: 0,
     fontSize: 20,
+    alignSelf: "stretch",
   },
   datetimepicker: {
-    backgroundColor: "white",
-    zIndex: 10,
+    width: Platform.isPad ? 300 : "100%",
     alignSelf: "center",
+    zIndex: 10,
   },
   submit: {
-    alignSelf: "center",
+    alignItems: "center",
   },
 });

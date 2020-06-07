@@ -36,13 +36,15 @@ export const EditSideEffectScreen = ({ route, navigation }) => {
         ListHeaderComponentStyle={styles.header}
       />
 
-      <Button
-        title="Delete"
-        onPress={() => {
-          deleteSideEffectById(route.params.id);
-          navigation.goBack();
-        }}
-      />
+      <View style={styles.delete}>
+        <Button
+          title="Delete"
+          onPress={() => {
+            deleteSideEffectById(route.params.id);
+            navigation.goBack();
+          }}
+        />
+      </View>
     </View>
   );
 };
@@ -62,4 +64,7 @@ const styles = StyleSheet.create({
   header: { flex: 0.1 },
 
   footer: { flex: 0.1 },
+  delete: {
+    alignSelf: "center",
+  },
 });
