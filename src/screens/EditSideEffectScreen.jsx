@@ -13,7 +13,6 @@ export const EditSideEffectScreen = ({ route, navigation }) => {
   const instances = state[route.params.index]
     ? state[route.params.index].instances
     : null;
-  console.log(instances);
 
   return (
     <View style={styles.container}>
@@ -40,7 +39,6 @@ export const EditSideEffectScreen = ({ route, navigation }) => {
       <Button
         title="Delete"
         onPress={() => {
-          console.log(route.params);
           deleteSideEffectById(route.params.id);
           navigation.goBack();
         }}
