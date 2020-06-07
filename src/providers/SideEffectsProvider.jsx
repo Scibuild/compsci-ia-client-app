@@ -17,11 +17,13 @@ type = "add-sideeffect" --> action.payload = {
 function reducer(state, action) {
   switch (action.type) {
     case "edit-sideeffect":
-      return state.map((item) =>
-        item.id === action.payload.id
-          ? { ...item, ...action.payload.new }
-          : item
-      ); // update any fields that have changed only, leaving any that don't have new informaton
+      return [
+        ...state.map((item) =>
+          item.id === action.payload.id
+            ? { ...item, ...action.payload.new }
+            : item
+        ),
+      ].sort((a, b) => a.name.localeCompare(b.name)); // update any fields that have changed only, leaving any that don't have new informaton
 
     case "add-sideeffect":
       return addSideEffect(state, action);
@@ -37,7 +39,12 @@ function addSideEffect(state, action) {
   if (index >= 0) {
     return state.map((item, i) =>
       i === index
-        ? { ...item, instances: [...item.instances, action.payload.instance] } // stateless append
+        ? {
+            ...item,
+            instances: [...item.instances, action.payload.instance].sort(
+              (a, b) => a.time - b.time
+            ),
+          } // stateless append
         : item
     );
   }
@@ -48,7 +55,7 @@ function addSideEffect(state, action) {
       id: uuidv4(),
       instances: [action.payload.instance],
     },
-  ];
+  ].sort((a, b) => a.name.localeCompare(b.name));
 }
 
 export const SideEffectContext = createContext(null);
