@@ -10,15 +10,45 @@ import {
 } from "react-native";
 import { Button } from "react-native";
 import { SideEffectContext } from "../providers/SideEffectsProvider";
+import DateTimePicker from "@react-native-community/datetimepicker";
+
+const TimePickerCP = ({ value, onChange }) => {
+  const [show, setShow] = useState(false);
+  if (Platform.OS == "android") {
+    return (
+      <>
+        <Button title="Set Time" onPress={() => setShow(true)} />
+        {show && (
+          <DateTimePicker
+            value={value}
+            onChange={(e, t) => {
+              setShow(false);
+              onChange(e, t);
+            }}
+            mode="time"
+            display="default"
+          />
+        )}
+      </>
+    );
+  } else {
+    return (
+      <DateTimePicker
+        value={value}
+        onChange={onChange}
+        mode="time"
+        display="default"
+      />
+    );
+  }
+};
 
 export const NewSideEffectScreen = ({ navigation }) => {
   const [name, setName] = useState("");
-  const [time, setTime] = useState("");
+  const [time, setTime] = useState(new Date());
   const [severity, setSeverity] = useState(5);
 
   const [errName, setErrName] = useState(false);
-  const [errTime, setErrTime] = useState(false);
-  const [errSeverity, setErrSeverity] = useState(false);
 
   const { addSideEffect } = useContext(SideEffectContext);
 
@@ -37,12 +67,18 @@ export const NewSideEffectScreen = ({ navigation }) => {
           underlineColorAndroid={errName ? "red" : "teal"}
           style={styles.textInput}
         />
-        <TextInput
+        {/* <TextInput
           onChangeText={setTime}
           value={time}
           placeholder="When was this"
           underlineColorAndroid={errTime ? "red" : "teal"}
           style={styles.textInput}
+        /> */}
+        <TimePickerCP
+          value={time}
+          onChange={(_, t) => {
+            setTime(t || time);
+          }}
         />
         <Text style={styles.text}>How bad is it?</Text>
         <Slider
@@ -59,13 +95,13 @@ export const NewSideEffectScreen = ({ navigation }) => {
             if (name && time && severity) {
               addSideEffect({
                 name,
-                instance: { time, severity },
+                instance: { time: time.getTime(), severity },
               });
               navigation.goBack();
             } else {
               setErrName(!name);
-              setErrTime(!time);
-              setErrSeverity(!severity);
+              // setErrTime(!time);
+              // setErrSeverity(!severity);
             }
           }}
         />

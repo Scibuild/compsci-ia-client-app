@@ -58,16 +58,16 @@ const initialState = [
     name: "Aching Leg",
     id: uuidv4(),
     instances: [
-      { time: "yesterday", severity: 7 },
-      { time: "today", severity: 5 },
+      { time: new Date(), severity: 7 },
+      { time: new Date(), severity: 5 },
     ],
   },
   {
     name: "Missing Head",
     id: uuidv4(),
     instances: [
-      { time: "last week", severity: 10 },
-      { time: "today", severity: 3 },
+      { time: new Date(), severity: 10 },
+      { time: new Date(), severity: 3 },
     ],
   },
 ];
@@ -94,7 +94,7 @@ export const SideEffectsProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if (state) {
+    if (state && state !== "") {
       AsyncStorage.setItem("side-effects", JSON.stringify(state));
     }
   }, [state]);
