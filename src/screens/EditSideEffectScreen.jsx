@@ -1,11 +1,8 @@
 import React, { useContext } from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
-import { Center, ItemSeparator } from "../components/formatted";
+import { ItemSeparator } from "../components/formatted";
 import { SideEffectContext } from "../providers/SideEffectsProvider";
-import { ScrollView, FlatList } from "react-native-gesture-handler";
-import { AddButton } from "../components/AddButton";
-import { SideEffectListItem } from "./SideEffectHistoryScreen";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { FlatList } from "react-native-gesture-handler";
 
 export const EditSideEffectScreen = ({ route, navigation }) => {
   const { state, deleteSideEffectById } = useContext(SideEffectContext);

@@ -1,10 +1,5 @@
 import React from "react";
-import { View, StyleSheet, Text } from "react-native";
-import {
-  TouchableOpacity,
-  TouchableHighlight,
-  RectButton,
-} from "react-native-gesture-handler";
+import { View, StyleSheet } from "react-native";
 
 export const Center = ({ children }) => {
   return <View style={styles.centered}>{children}</View>;

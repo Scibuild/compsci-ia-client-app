@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { ScrollView, FlatList, TextInput } from "react-native-gesture-handler";
+import { ScrollView, TextInput } from "react-native-gesture-handler";
 import {
   View,
   Text,
@@ -7,7 +7,6 @@ import {
   KeyboardAvoidingView,
   Slider,
   Platform,
-  Dimensions,
 } from "react-native";
 import { Button } from "react-native";
 import { SideEffectContext } from "../providers/SideEffectsProvider";
