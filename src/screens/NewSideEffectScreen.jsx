@@ -44,18 +44,6 @@ export const NewSideEffectScreen = ({ navigation }) => {
           underlineColorAndroid={errTime ? "red" : "teal"}
           style={styles.textInput}
         />
-
-        {/* <TextInput
-          onChangeText={(text) =>
-            text <= 10 && text >= 0 ? setSeverity(text) : null
-          }
-          value={severity}
-          placeholder="How bad is it from 1 to 10"
-          underlineColorAndroid={errSeverity ? "red" : "teal"}
-          style={styles.textInput}
-          keyboardType="number-pad"
-        /> */}
-
         <Text style={styles.text}>How bad is it?</Text>
         <Slider
           maximumValue={10}
@@ -65,7 +53,6 @@ export const NewSideEffectScreen = ({ navigation }) => {
           value={severity}
           style={styles.slider}
         />
-        {/* <Text>{severity}</Text> */}
         <Button
           title="Submit"
           onPress={() => {
