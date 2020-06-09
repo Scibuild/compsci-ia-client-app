@@ -110,7 +110,7 @@ export const NewSideEffectScreen = ({ navigation }) => {
             title="Submit"
             style={styles.submit}
             onPress={() => {
-              if (name && time && severity) {
+              if (name) {
                 addSideEffect({
                   name,
                   instance: {
