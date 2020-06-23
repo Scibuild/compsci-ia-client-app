@@ -7,6 +7,11 @@ import {
   KeyboardAvoidingView,
   Slider,
   Platform,
+<<<<<<< HEAD
+=======
+  Dimensions,
+  Picker,
+>>>>>>> 3c87140f9cd46fe45020f0450419f81e59b9c4f9
 } from "react-native";
 import { Button } from "react-native";
 import { SideEffectContext } from "../providers/SideEffectsProvider";
@@ -67,13 +72,15 @@ const DateTimePickerCP = ({ value, onChange }) => {
 };
 
 export const NewSideEffectScreen = ({ navigation }) => {
-  const [name, setName] = useState("");
+  const { state, addSideEffect } = useContext(SideEffectContext);
+
+  const [name, setName] = useState(state[0].name);
   const [time, setTime] = useState(new Date());
   const [severity, setSeverity] = useState(5);
+  const [sideEffect, setSideEffect] = useState(state[0].name);
+  const other = "Other...";
 
   const [errName, setErrName] = useState(false);
-
-  const { addSideEffect } = useContext(SideEffectContext);
 
   return (
     <KeyboardAvoidingView
@@ -83,13 +90,35 @@ export const NewSideEffectScreen = ({ navigation }) => {
       keyboardVerticalOffset={40}
     >
       <ScrollView contentContainerStyle={styles.container}>
-        <TextInput
-          onChangeText={setName}
-          value={name}
-          placeholder="What is the side effect?"
-          underlineColorAndroid={errName ? "red" : "teal"}
-          style={styles.textInput}
-        />
+        <Picker
+          selectedValue={sideEffect}
+          onValueChange={(itemValue) => {
+            setSideEffect(itemValue);
+            if (itemValue !== other) {
+              setName(itemValue);
+            } else {
+              setName("");
+            }
+          }}
+        >
+          {state
+            .map(({ name }) => name)
+            .concat([other])
+            .map((name) => (
+              <Picker.Item label={name} key={name} value={name} />
+            ))}
+        </Picker>
+
+        {sideEffect === other && (
+          <TextInput
+            onChangeText={setName}
+            value={name}
+            placeholder="What is the side effect?"
+            underlineColorAndroid={errName ? "red" : "teal"}
+            style={styles.textInput}
+          />
+        )}
+
         <DateTimePickerCP
           value={time}
           onChange={(_, t) => {
