@@ -7,15 +7,11 @@ import {
   KeyboardAvoidingView,
   Slider,
   Platform,
-<<<<<<< HEAD
-=======
-  Dimensions,
-  Picker,
->>>>>>> 3c87140f9cd46fe45020f0450419f81e59b9c4f9
 } from "react-native";
 import { Button } from "react-native";
 import { SideEffectContext } from "../providers/SideEffectsProvider";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { Picker } from "@react-native-community/picker";
 
 const DateTimePickerCP = ({ value, onChange }) => {
   const [show, setShow] = useState(false);
