@@ -39,6 +39,6 @@ const styles = StyleSheet.create({
         elevation: 5,
       },
     }),
-    backgroundColor: "#ff7777",
+    backgroundColor: "tomato",
   },
 });
