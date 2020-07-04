@@ -1,6 +1,6 @@
 import React from "react";
-import { View, StyleSheet, Platform } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import { View, StyleSheet, Platform, Text } from "react-native";
+import { TextInput, ScrollView } from "react-native-gesture-handler";
 
 export const Center = ({ children }) => {
   return <View style={styles.centered}>{children}</View>;
@@ -14,6 +14,12 @@ export const FormattedTextInput = ({
   err,
   placeholder,
 }) => {
+  if (err === undefined) {
+    err = false;
+  }
+  if (placeholder === undefined) {
+    placeholder = "";
+  }
   return (
     <TextInput
       onChangeText={onChangeText}
@@ -22,6 +28,26 @@ export const FormattedTextInput = ({
       underlineColorAndroid={err ? "red" : "teal"}
       style={styles.textInput}
     />
+  );
+};
+
+export const ScrollContainer = ({ style, children }) => {
+  return (
+    <ScrollView style={StyleSheet.compose(styles.container, style)}>
+      {children}
+    </ScrollView>
+  );
+};
+
+export const Container = ({ style, children }) => {
+  return (
+    <View style={StyleSheet.compose(styles.container, style)}>{children}</View>
+  );
+};
+
+export const BigText = ({ style, children }) => {
+  return (
+    <Text style={StyleSheet.compose(styles.container, style)}>{children}</Text>
   );
 };
 
@@ -56,5 +82,12 @@ const styles = StyleSheet.create({
       },
       android: {},
     }),
+  },
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  bigText: {
+    fontSize: 20,
   },
 });
