@@ -12,6 +12,7 @@ import { Button } from "react-native";
 import { SideEffectContext } from "../providers/SideEffectsProvider";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-community/picker";
+import { FormattedTextInput } from "../components/formatted";
 
 const DateTimePickerCP = ({ value, onChange }) => {
   const [show, setShow] = useState(false);
@@ -106,12 +107,11 @@ export const NewSideEffectScreen = ({ navigation }) => {
         </Picker>
 
         {sideEffect === other && (
-          <TextInput
+          <FormattedTextInput
             onChangeText={setName}
             value={name}
             placeholder="What is the side effect?"
-            underlineColorAndroid={errName ? "red" : "teal"}
-            style={styles.textInput}
+            err={errName}
           />
         )}
 
@@ -166,21 +166,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  textInput: {
-    margin: 10,
-    padding: 5,
-    fontSize: 20,
-    alignSelf: "stretch",
-
-    ...Platform.select({
-      ios: {
-        borderColor: "grey",
-        borderWidth: 1,
-        borderRadius: 4,
-      },
-      android: {},
-    }),
   },
   slider: {
     marginTop: 0,
