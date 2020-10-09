@@ -13,6 +13,7 @@ export const FormattedTextInput = ({
   value,
   err,
   placeholder,
+  style,
 }) => {
   if (err === undefined) {
     err = false;
@@ -26,7 +27,7 @@ export const FormattedTextInput = ({
       value={value}
       placeholder={placeholder}
       underlineColorAndroid={err ? "red" : "teal"}
-      style={styles.textInput}
+      style={StyleSheet.compose(styles.textInput, style)}
     />
   );
 };
@@ -47,7 +48,13 @@ export const Container = ({ style, children }) => {
 
 export const BigText = ({ style, children }) => {
   return (
-    <Text style={StyleSheet.compose(styles.container, style)}>{children}</Text>
+    <Text style={StyleSheet.compose(styles.bigText, style)}>{children}</Text>
+  );
+};
+
+export const BoldText = ({ style, children }) => {
+  return (
+    <Text style={StyleSheet.compose(styles.boldText, style)}>{children}</Text>
   );
 };
 
@@ -89,5 +96,8 @@ const styles = StyleSheet.create({
   },
   bigText: {
     fontSize: 20,
+  },
+  boldText: {
+    fontWeight: "bold",
   },
 });

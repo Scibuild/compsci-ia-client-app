@@ -5,32 +5,35 @@ import { EditProfileScreen } from "../screens/EditProfileScreen";
 import { TouchableNativeFeedback } from "react-native-gesture-handler";
 import { View, StyleSheet } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { ProfileProvider } from "../providers/ProfileProvider";
 
 const Stack = createStackNavigator();
 
 const ProfileStackRoute = () => {
   return (
-    <Stack.Navigator initialRouteName="History">
-      <Stack.Screen
-        name="View"
-        component={ViewProfileScreen}
-        options={({ navigation }) => ({
-          title: "Profile",
-          headerRight: viewHeaderRight(navigation),
-        })}
-      />
-      <Stack.Screen
-        name="EditProfile"
-        component={EditProfileScreen}
-        options={() => ({
-          title: "Edit Profile",
-        })}
-      />
-    </Stack.Navigator>
+    <ProfileProvider>
+      <Stack.Navigator initialRouteName="History">
+        <Stack.Screen
+          name="View"
+          component={ViewProfileScreen}
+          options={({ navigation }) => ({
+            title: "Profile",
+            headerRight: viewHeaderRight(navigation),
+          })}
+        />
+        <Stack.Screen
+          name="EditProfile"
+          component={EditProfileScreen}
+          options={() => ({
+            title: "Edit Profile",
+          })}
+        />
+      </Stack.Navigator>
+    </ProfileProvider>
   );
 };
 
-const viewHeaderRight = (navigation) => () => {
+const viewHeaderRight = navigation => () => {
   return (
     <View style={styles.headerButtonContainer}>
       <TouchableNativeFeedback

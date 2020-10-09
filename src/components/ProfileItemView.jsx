@@ -1,23 +1,26 @@
 import React from "react";
 import { View, Text } from "react-native";
+import { BigText, BoldText } from "./formatted";
 
-export const ProfileItemView = ({ name, value, style }) => {
+export const ProfileItemView = ({ name, value }) => {
   if (Array.isArray(value)) {
     return (
       <View>
-        <Text style={style}>{name}:</Text>
-        {value.map((v, i) => (
-          <Text style={style} key={i}>{`\t\u2022\t${v}`}</Text>
-        ))}
+        <BigText>
+          {name}:
+          {value.map((v, i) => (
+            <BoldText key={i}>{`\n\t\t\t\u2022\t${v}`}</BoldText>
+          ))}
+        </BigText>
       </View>
     );
   }
 
   return (
     <View>
-      <Text style={style}>
-        {name}: {value}
-      </Text>
+      <BigText>
+        {name}: <BoldText>{value}</BoldText>
+      </BigText>
     </View>
   );
 };

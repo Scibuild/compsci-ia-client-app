@@ -1,27 +1,27 @@
-import React from "react";
-import { ScrollView } from "react-native-gesture-handler";
+import React, { useContext } from "react";
+import { ProfileContext } from "../providers/ProfileProvider";
+import { FlatList } from "react-native-gesture-handler";
 import { ProfileItemView } from "../components/ProfileItemView";
+import { Container } from "../components/formatted";
 import { StyleSheet } from "react-native";
 
 export const ViewProfileScreen = () => {
+  let { profile } = useContext(ProfileContext);
   return (
-    <ScrollView style={styles.container}>
-      <ProfileItemView name="Name" value="Theo MB" style={styles.text} />
-      <ProfileItemView
-        name="Previous Scans"
-        style={styles.text}
-        value={["X-ray", "CAT", "EEG", "MRI"]}
-      />
-    </ScrollView>
+    <FlatList
+      data={profile}
+      renderItem={({ item }) => {
+        return (
+          <ProfileItemView name={item.name} key={item.id} value={item.value} />
+        );
+      }}
+      contentContainerStyle={styles.container}
+    />
   );
 };
 
-const styles = StyleSheet.create({
+let styles = StyleSheet.create({
   container: {
     padding: 20,
-    flex: 1,
-  },
-  text: {
-    fontSize: 20,
   },
 });

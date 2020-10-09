@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
-import { ItemSeparator } from "../components/formatted";
+import { ItemSeparator, Container } from "../components/formatted";
 import { SideEffectContext } from "../providers/SideEffectsProvider";
 import { FlatList } from "react-native-gesture-handler";
 
@@ -12,7 +12,7 @@ export const EditSideEffectScreen = ({ route, navigation }) => {
     : null;
 
   return (
-    <View style={styles.container}>
+    <Container>
       <Text style={styles.listItem}>Side effect: {route.params.name}</Text>
       <FlatList
         data={instances}
@@ -42,15 +42,13 @@ export const EditSideEffectScreen = ({ route, navigation }) => {
           }}
         />
       </View>
-    </View>
+    </Container>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-
     justifyContent: "center",
   },
   listItem: {
