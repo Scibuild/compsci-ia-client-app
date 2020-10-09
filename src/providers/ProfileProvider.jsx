@@ -20,19 +20,19 @@ function reducer(state, action) {
       if (state.temporaryProfile.length === 0) {
         return {
           profile: [...state.profile],
-          temporaryProfile: state.profile.map((field) =>
+          temporaryProfile: state.profile.map(field =>
             field.id === action.payload.id
               ? { ...field, value: action.payload.value }
-              : field
+              : field,
           ),
         };
       } else {
         return {
           profile: [...state.profile],
-          temporaryProfile: state.temporaryProfile.map((field) =>
+          temporaryProfile: state.temporaryProfile.map(field =>
             field.id === action.payload.id
               ? { ...field, value: action.payload.value }
-              : field
+              : field,
           ),
         };
       }
@@ -72,7 +72,7 @@ export const ProfileProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    AsyncStorage.getItem("profile").then((storedState) => {
+    AsyncStorage.getItem("profile").then(storedState => {
       if (storedState && isCurrent.current) {
         dispatch({
           type: "init-profile",
@@ -120,7 +120,7 @@ export const ProfileProvider = ({ children }) => {
             dispatch({ type: "drop-temp" });
           }
         },
-        setField: (fieldName) => (fieldValue) => {
+        setField: fieldName => fieldValue => {
           if (isCurrent.current) {
             dispatch({
               type: "set-field",

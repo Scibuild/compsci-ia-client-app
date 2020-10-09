@@ -103,17 +103,17 @@ export const NewSideEffectScreen = ({ navigation }) => {
           }}
         >
           {state
-            .map(({ name }, idx) => [name, idx])
-            .concat([other, -1])
-            .map(([name, idx]) => (
-              <Picker.Item label={name} key={name} value={idx} />
+            .map(({ name }, idx) => ({ name, idx }))
+            .concat([{ name: other, idx: -1 }])
+            .map(({ name, idx }) => (
+              <Picker.Item label={name} key={idx} value={idx} />
             ))}
         </Picker>
 
         {sideEffectIdx === -1 && (
           <FormattedTextInput
             onChangeText={setSideEffectName}
-            value={name}
+            value={sideEffectName}
             placeholder="What is the side effect?"
             err={errName}
           />
@@ -139,9 +139,10 @@ export const NewSideEffectScreen = ({ navigation }) => {
             title="Submit"
             style={styles.submit}
             onPress={() => {
-              if (name) {
+              if (sideEffectName) {
+                console.log(sideEffectName);
                 addSideEffect({
-                  name,
+                  sideEffectName,
                   instance: {
                     time: time.getTime(),
                     severity: Math.round(severity),
@@ -149,7 +150,7 @@ export const NewSideEffectScreen = ({ navigation }) => {
                 });
                 navigation.goBack();
               } else {
-                setErrName(!name);
+                setErrName(!sideEffectName);
               }
             }}
           />
