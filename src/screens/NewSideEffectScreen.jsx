@@ -71,11 +71,15 @@ const DateTimePickerCP = ({ value, onChange }) => {
 export const NewSideEffectScreen = ({ navigation }) => {
   const { state, addSideEffect } = useContext(SideEffectContext);
 
-  const [name, setName] = useState(state[0].name);
   const [time, setTime] = useState(new Date());
   const [severity, setSeverity] = useState(5);
-  const [sideEffect, setSideEffect] = useState(state[0].name);
+  const [sideEffectIdx, setSideEffectIdx] = useState(() =>
+    state.length === 0 ? -1 : 0,
+  ); // default value if there are no side effects to 'other' == -1
   const other = "Other...";
+  const [sideEffectName, setSideEffectName] = useState(() =>
+    sideEffectIdx === -1 ? "" : state[sideEffectIdx].name,
+  );
 
   const [errName, setErrName] = useState(false);
 
@@ -88,27 +92,27 @@ export const NewSideEffectScreen = ({ navigation }) => {
     >
       <ScrollView contentContainerStyle={styles.container}>
         <Picker
-          selectedValue={sideEffect}
-          onValueChange={(itemValue) => {
-            setSideEffect(itemValue);
-            if (itemValue !== other) {
-              setName(itemValue);
+          selectedValue={sideEffectIdx}
+          onValueChange={itemValue => {
+            setSideEffectIdx(itemValue);
+            if (itemValue !== -1) {
+              setSideEffectName(state[itemValue].name);
             } else {
-              setName("");
+              setSideEffectName("");
             }
           }}
         >
           {state
-            .map(({ name }) => name)
-            .concat([other])
-            .map((name) => (
-              <Picker.Item label={name} key={name} value={name} />
+            .map(({ name }, idx) => [name, idx])
+            .concat([other, -1])
+            .map(([name, idx]) => (
+              <Picker.Item label={name} key={name} value={idx} />
             ))}
         </Picker>
 
-        {sideEffect === other && (
+        {sideEffectIdx === -1 && (
           <FormattedTextInput
-            onChangeText={setName}
+            onChangeText={setSideEffectName}
             value={name}
             placeholder="What is the side effect?"
             err={errName}
@@ -126,7 +130,7 @@ export const NewSideEffectScreen = ({ navigation }) => {
           maximumValue={10}
           minimumValue={0}
           step={Platform.OS === "ios" ? 0 : 1}
-          onSlidingComplete={(val) => setSeverity(val)}
+          onSlidingComplete={val => setSeverity(val)}
           value={severity}
           style={styles.slider}
         />
