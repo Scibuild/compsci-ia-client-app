@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
-import { ItemSeparator, Container } from "../components/formatted";
-import { SideEffectContext } from "../providers/SideEffectsProvider";
+import { ItemSeparator, Container } from "../../components/formatted";
+import { SideEffectContext } from "../../providers/SideEffectsProvider";
 import { FlatList } from "react-native-gesture-handler";
 
 export const EditSideEffectScreen = ({ route, navigation }) => {

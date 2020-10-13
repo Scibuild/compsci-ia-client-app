@@ -1,8 +1,8 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { NewSideEffectScreen } from "../screens/NewSideEffectScreen";
-import { SideEffectHistoryScreen } from "../screens/SideEffectHistoryScreen";
-import { EditSideEffectScreen } from "../screens/EditSideEffectScreen";
+import { NewSideEffectScreen } from "../screens/sideeffects/NewSideEffectScreen";
+import { SideEffectHistoryScreen } from "../screens/sideeffects/SideEffectHistoryScreen";
+import { EditSideEffectScreen } from "../screens/sideeffects/EditSideEffectScreen";
 import { SideEffectsProvider } from "../providers/SideEffectsProvider";
 
 const Stack = createStackNavigator();

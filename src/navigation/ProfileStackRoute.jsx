@@ -1,7 +1,7 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { ViewProfileScreen } from "../screens/ViewProfileScreen";
-import { EditProfileScreen } from "../screens/EditProfileScreen";
+import { ViewProfileScreen } from "../screens/profile/ViewProfileScreen";
+import { EditProfileScreen } from "../screens/profile/EditProfileScreen";
 import { TouchableNativeFeedback } from "react-native-gesture-handler";
 import { View, StyleSheet } from "react-native";
 import { AntDesign } from "@expo/vector-icons";

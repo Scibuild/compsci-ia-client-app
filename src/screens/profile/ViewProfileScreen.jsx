@@ -1,8 +1,7 @@
 import React, { useContext } from "react";
-import { ProfileContext } from "../providers/ProfileProvider";
+import { ProfileContext } from "../../providers/ProfileProvider";
 import { FlatList } from "react-native-gesture-handler";
-import { ProfileItemView } from "../components/ProfileItemView";
-import { Container } from "../components/formatted";
+import { ProfileItemView } from "../../components/ProfileItemView";
 import { StyleSheet } from "react-native";
 
 export const ViewProfileScreen = () => {

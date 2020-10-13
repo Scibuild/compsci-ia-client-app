@@ -4,15 +4,18 @@ import SideEffectsStackRoute from "./SideEffectsStackRoute";
 import ProfileStackRoute from "./ProfileStackRoute";
 import { AntDesign } from "@expo/vector-icons";
 import { Text } from "react-native";
+import ReminderStackRoute from "./RemindersStackRoute";
 
 const Tabs = createBottomTabNavigator();
 
-const tabBarIcon = (route) => ({ focused, color, size }) => {
+const tabBarIcon = route => ({ focused, color, size }) => {
   let iconName;
   if (route.name === "SideEffects") {
     iconName = focused ? "frown" : "frowno";
   } else if (route.name === "Profile") {
     iconName = "user";
+  } else if (route.name === "Reminders") {
+    iconName = focused ? "clockcircle" : "clockcircleo";
   }
 
   return <AntDesign name={iconName} color={color} size={size} />;
@@ -31,6 +34,7 @@ const MainTabs = () => {
     >
       <Tabs.Screen name="SideEffects" component={SideEffectsStackRoute} />
       <Tabs.Screen name="Profile" component={ProfileStackRoute} />
+      <Tabs.Screen name="Reminders" component={ReminderStackRoute} />
     </Tabs.Navigator>
   );
 };

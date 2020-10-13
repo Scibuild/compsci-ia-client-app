@@ -9,10 +9,10 @@ import {
   Platform,
 } from "react-native";
 import { Button } from "react-native";
-import { SideEffectContext } from "../providers/SideEffectsProvider";
+import { SideEffectContext } from "../../providers/SideEffectsProvider";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-community/picker";
-import { FormattedTextInput } from "../components/formatted";
+import { FormattedTextInput } from "../../components/formatted";
 
 const DateTimePickerCP = ({ value, onChange }) => {
   const [show, setShow] = useState(false);
@@ -142,7 +142,7 @@ export const NewSideEffectScreen = ({ navigation }) => {
               if (sideEffectName) {
                 console.log(sideEffectName);
                 addSideEffect({
-                  sideEffectName,
+                  name: sideEffectName,
                   instance: {
                     time: time.getTime(),
                     severity: Math.round(severity),

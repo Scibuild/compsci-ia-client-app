@@ -18,10 +18,10 @@ function reducer(state, action) {
   switch (action.type) {
     case "edit-sideeffect":
       return [
-        ...state.map((item) =>
+        ...state.map(item =>
           item.id === action.payload.id
             ? { ...item, ...action.payload.new }
-            : item
+            : item,
         ),
       ].sort((a, b) => a.name.localeCompare(b.name)); // update any fields that have changed only, leaving any that don't have new informaton
 
@@ -30,32 +30,34 @@ function reducer(state, action) {
     case "init-sideeffects":
       return action.payload;
     case "deleteid-sideeffect":
-      return state.filter((item) => item.id !== action.id);
+      return state.filter(item => item.id !== action.id);
   }
 }
 
 function addSideEffect(state, action) {
-  let index = state.map((i) => i.name).indexOf(action.payload.name);
+  let index = state.map(i => i.name).indexOf(action.payload.name);
   if (index >= 0) {
     return state.map((item, i) =>
       i === index
         ? {
             ...item,
             instances: [...item.instances, action.payload.instance].sort(
-              (a, b) => a.time - b.time
+              (a, b) => a.time - b.time,
             ),
           } // stateless append
-        : item
+        : item,
     );
   }
-  return [
+  console.log(action.payload.name);
+  let presort = [
     ...state,
     {
       name: action.payload.name,
       id: uuidv4(),
       instances: [action.payload.instance],
     },
-  ].sort((a, b) => a.name.localeCompare(b.name));
+  ];
+  return presort.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 export const SideEffectContext = createContext(null);
@@ -84,7 +86,7 @@ export const SideEffectsProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    AsyncStorage.getItem("side-effects").then((storedState) => {
+    AsyncStorage.getItem("side-effects").then(storedState => {
       if (storedState && isCurrent.current) {
         dispatch({
           type: "init-sideeffects",
@@ -110,17 +112,17 @@ export const SideEffectsProvider = ({ children }) => {
     <SideEffectContext.Provider
       value={{
         state: state,
-        addSideEffect: (payload) => {
+        addSideEffect: payload => {
           if (isCurrent.current) {
             dispatch({ type: "add-sideeffect", payload });
           }
         },
-        editSideEffect: (payload) => {
+        editSideEffect: payload => {
           if (isCurrent.current) {
             dispatch({ type: "edit-sideeffect", payload });
           }
         },
-        deleteSideEffectById: (id) => {
+        deleteSideEffectById: id => {
           if (isCurrent.current) {
             dispatch({ type: "deleteid-sideeffect", id });
           }
