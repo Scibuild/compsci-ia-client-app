@@ -5,19 +5,17 @@ import { ItemSeparator } from "../../components/formatted";
 import { SideEffectContext } from "../../providers/SideEffectsProvider";
 import { AddButton } from "../../components/AddButton";
 import { AddableListView } from "../../components/AddableListView";
+import { TouchableListItem } from "../../components/TouchableListItem";
 
 export const SideEffectListItem = ({ name, id, index, navigation }) => {
   return (
-    <RectButton
-      style={styles.listItemTouchable}
+    <TouchableListItem
       onPress={() => {
         navigation.navigate("EditSideEffect", { name, id, index });
       }}
     >
-      <View accessible>
-        <Text style={styles.listItemText}>{name}</Text>
-      </View>
-    </RectButton>
+      <Text style={styles.listItemText}>{name}</Text>
+    </TouchableListItem>
   );
 };
 
