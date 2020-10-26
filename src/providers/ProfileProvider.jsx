@@ -79,7 +79,7 @@ export const ProfileProvider = ({ children }) => {
           payload: JSON.parse(storedState),
         });
       }
-      if (storedState.length === 0) {
+      if (storedState == null || storedState.length === 0) {
         dispatch({
           type: "init-profile",
           payload: initialState.profile,

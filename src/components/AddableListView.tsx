@@ -1,10 +1,11 @@
 import React from "react";
-import { View } from "react-native";
+import { ListRenderItem, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { ItemSeparator } from "./formatted";
 import { AddButton } from "./AddButton";
 
-export const AddableListView = ({ data, renderItem, onAdd }) => {
+type AddableListViewProps<T> = { data: Array<T>, renderItem: ListRenderItem<T>, onAdd: any }
+export const AddableListView = ({ data, renderItem, onAdd }: AddableListViewProps<any>) => {
   return (
     <View style={{ flex: 1 }}>
       <FlatList
