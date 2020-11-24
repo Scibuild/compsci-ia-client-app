@@ -8,6 +8,7 @@ import { TouchableNativeFeedback } from "react-native-gesture-handler";
 import { Alert } from "react-native";
 import { HeaderBackButton } from "@react-navigation/stack";
 import { AntDesign } from "@expo/vector-icons";
+import { useCustomBackButton } from "../../hooks/useBackButton";
 
 export const EditProfileScreen = ({ navigation }) => {
   let {
@@ -26,30 +27,13 @@ export const EditProfileScreen = ({ navigation }) => {
     let saved = tempProfile.length === 0;
     if (!saved) {
       unsavedAlert(navigation);
-      return true;
     } else {
       navigation.goBack();
-      return true;
     }
+    return true;
   }, [tempProfile.length]);
 
-  useFocusEffect(
-    useCallback(() => {
-      BackHandler.addEventListener("hardwareBackPress", onBackPress);
-
-      return () =>
-        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
-    }, [tempProfile.length]),
-  );
-
-  useLayoutEffect(() => {
-    let newBackButton = props => {
-      return <HeaderBackButton {...props} onPress={onBackPress} />;
-    };
-    navigation.setOptions({
-      headerLeft: newBackButton,
-    });
-  }, [tempProfile.length]);
+  useCustomBackButton(onBackPress, [tempProfile.length], navigation);
 
   useLayoutEffect(() => {
     navigation.setOptions({
