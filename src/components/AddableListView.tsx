@@ -12,7 +12,7 @@ export const AddableListView = ({ data, renderItem, onAdd }: AddableListViewProp
         data={data}
         renderItem={renderItem}
         ItemSeparatorComponent={ItemSeparator}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item, index) => item.id || index.toString()}
       />
       <AddButton onPress={onAdd} />
     </View>
