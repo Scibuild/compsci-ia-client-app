@@ -1,21 +1,15 @@
 import { StackNavigationProp } from "@react-navigation/stack";
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Switch } from "react-native-gesture-handler";
 import { AddableListView } from '../../components/AddableListView';
 import { BigText } from '../../components/formatted';
 import { TouchableListItem } from '../../components/TouchableListItem';
 import { RemindersParamList } from "../../navigation/RemindersStackRoute";
-import * as Notifications from 'expo-notifications';
 import { useReminderStore } from "../../providers/RemindersStore";
+import { produce } from 'immer';
+import { EditReminderScreen } from './EditReminderScreen';
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  })
-})
 
 // Notifications.scheduleNotificationAsync({
 //   content: {
@@ -31,6 +25,9 @@ export const ViewRemindersScreen: React.FC<ViewRemindersScreenProp> = ({ navigat
   const toggleReminder = useReminderStore(state => state.toggleReminder);
   const addReminder = useReminderStore(state => state.addReminder);
   const reminders = useReminderStore(state => state.reminders)
+
+  // prevents the a visual glitch caused by the asyncronous enabling of notifications by setting the visual state temporarily here
+  const [tempToggle, setTempToggle] = useState<Map<String, boolean>>(new Map())
 
   return (<AddableListView
     data={reminders}
@@ -53,7 +50,8 @@ export const ViewRemindersScreen: React.FC<ViewRemindersScreenProp> = ({ navigat
         >
           <View style={styles.itemContainer}>
             <BigText>{item.drug}</BigText>
-            <Switch value={item.enabled} onValueChange={() => {
+            <Switch value={tempToggle.get(item.id) || item.enabled} onValueChange={() => {
+              setTempToggle(produce(tempToggle, s => { s.set(item.id, !item.enabled) }))
               toggleReminder(item.id)
             }} />
           </View>
