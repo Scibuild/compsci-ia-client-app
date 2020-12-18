@@ -31,6 +31,7 @@ type ReminderStoreState = {
   deleteReminder: (id: string) => void,
   addReminder: (rem: Reminder) => void,
   replaceReminder: (id: string, rem: Reminder) => void,
+  // initialiseAllNotifications: () => void,
 }
 export const useReminderStore = create<ReminderStoreState>(persist((set, get) => ({
   reminders: initialState,
@@ -40,20 +41,23 @@ export const useReminderStore = create<ReminderStoreState>(persist((set, get) =>
   },
   deleteReminder: (id: string) => set(produce(deleteReminderFn(id))),
   addReminder: (rem: Reminder) => set(produce(addReminderFn(rem))),
-  replaceReminder: (id: string, rem: Reminder) => set(produce(replaceReminderFn(id, rem)))
+  replaceReminder: (id: string, rem: Reminder) => set(produce(replaceReminderFn(id, rem))),
+  //initialiseAllNotifications: () => set(produce(initialiseAllNotifications))
 }), {
   name: 'reminders',
-  storage: AsyncStorage
+  storage: AsyncStorage,
+  // re-registers all notifications when the current reminders are loaded from storage, 
+  // (on app startup), ensures notifications are always in sync with displayed data
+  // default serialisation is with JSON, so JSON.parse converts back
+  deserialize: async (stored) => {
+    let state = JSON.parse(stored)
+    Notifications.cancelAllScheduledNotificationsAsync();
+    //both updates notification ids and creates new notifs
+    return initialiseAllNotifications(state)
+  }
 }))
 
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  })
-})
 
 // Notifications.scheduleNotificationAsync({
 //   content: {
@@ -64,26 +68,19 @@ Notifications.setNotificationHandler({
 //   trigger: null
 // })
 
-// Notifications.cancelAllScheduledNotificationsAsync();
+// 
 // for when it all breaks
 
 async function toggleReminderNotif(id: string, reminders: Reminder[]) {
   let rem = reminders.find((rem: Reminder) => rem.id === id);
   if (rem?.enabled) {
     rem.reminderids?.forEach(element => {
-      Notifications.cancelScheduledNotificationAsync(element);
+      Notifications.cancelScheduledNotificationAsync(element)
     });
     return []
   } else {
 
-    let notifid = Notifications.scheduleNotificationAsync({
-      content: {
-        title: rem?.drug,
-        body: rem?.instructions,
-        vibrate: [0, 100]
-      },
-      trigger: { seconds: 2 },
-    }).then(n => [n]);
+    let notifid = initialiseNotification(rem);
     return notifid
   }
 
@@ -113,4 +110,30 @@ const addReminderFn = (rem: Reminder) => (state: ReminderStoreState) => {
   rem.id = uuidv4()
   state.reminders.push(rem)
   state.reminders.sort()
+}
+
+const initialiseAllNotifications = (state: ReminderStoreState) => {
+  state.reminders.map(async (rem) => {
+    if (!rem.enabled) {
+      return [];
+    }
+    let notifid = await initialiseNotification(rem);
+    rem.reminderids = notifid;
+    return rem
+  });
+
+  return state
+}
+
+async function initialiseNotification(reminder?: Reminder): Promise<string[]> {
+  let notifid = Notifications.scheduleNotificationAsync({
+    content: {
+      title: reminder?.drug,
+      body: reminder?.instructions,
+      vibrate: [0, 100]
+    },
+    trigger: { seconds: 2 },
+  }).then(n => [n]);
+  return notifid;
+
 }

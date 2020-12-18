@@ -1,11 +1,13 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import MainTabs from "./MainTabs";
-import { enableMapSet } from "immer";
+import { preinit, init } from "../lib/init";
 
-enableMapSet();
+// run before everything
+preinit();
 
 export const MainRoute = () => {
+  React.useEffect(init, []);
   return (
     <NavigationContainer>
       <MainTabs />
