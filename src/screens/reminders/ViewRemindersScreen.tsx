@@ -1,6 +1,6 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import { Switch } from "react-native-gesture-handler";
 import { AddableListView } from '../../components/AddableListView';
 import { BigText } from '../../components/formatted';
@@ -8,7 +8,6 @@ import { TouchableListItem } from '../../components/TouchableListItem';
 import { RemindersParamList } from "../../navigation/RemindersStackRoute";
 import { useReminderStore } from "../../providers/RemindersStore";
 import { produce } from 'immer';
-import { EditReminderScreen } from './EditReminderScreen';
 
 
 // Notifications.scheduleNotificationAsync({
@@ -23,7 +22,6 @@ import { EditReminderScreen } from './EditReminderScreen';
 type ViewRemindersScreenProp = { navigation: StackNavigationProp<RemindersParamList, 'View'> }
 export const ViewRemindersScreen: React.FC<ViewRemindersScreenProp> = ({ navigation }) => {
   const toggleReminder = useReminderStore(state => state.toggleReminder);
-  const addReminder = useReminderStore(state => state.addReminder);
   const reminders = useReminderStore(state => state.reminders)
 
   // prevents the a visual glitch caused by the asyncronous enabling of notifications by setting the visual state temporarily here
@@ -32,13 +30,6 @@ export const ViewRemindersScreen: React.FC<ViewRemindersScreenProp> = ({ navigat
   return (<AddableListView
     data={reminders}
     onAdd={() => {
-      // addReminder({
-      //   drug: 'generic pill',
-      //   enabled: true,
-      //   instructions: 'take',
-      //   repeatEveryDays: 1,
-      //   times: ['12:00']
-      // })
       navigation.navigate("Edit", { drug: "" })
     }}
     renderItem={
