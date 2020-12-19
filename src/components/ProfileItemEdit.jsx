@@ -1,14 +1,16 @@
 import React from "react";
 import { View } from "react-native";
 import { FormattedTextInput, BigText } from "./formatted";
+import { TextInputList } from "./TextInputList";
 
 export const ProfileItemEdit = ({ name, value, onChangeText }) => {
   if (Array.isArray(value)) {
-    let paddedarray = value.concat([""]);
+    // let paddedarray = value.concat([""]);
     return (
       <View>
         <BigText>{name}: </BigText>
-        {paddedarray.map((val, i) => (
+        <TextInputList value={value} onChangeText={onChangeText} />
+        {/* {paddedarray.map((val, i) => (
           <FormattedTextInput
             placeholder="New..."
             style={{ marginBottom: 0, marginTop: 0 }}
@@ -21,7 +23,7 @@ export const ProfileItemEdit = ({ name, value, onChangeText }) => {
               onChangeText(newval);
             }}
           />
-        ))}
+        ))} */}
       </View>
     );
   }
