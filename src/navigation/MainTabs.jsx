@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import SideEffectsStackRoute from "./SideEffectsStackRoute";
 import ProfileStackRoute from "./ProfileStackRoute";
 import { AntDesign } from "@expo/vector-icons";
-import { Text } from "react-native";
+import { Platform, Text } from "react-native";
 import ReminderStackRoute from "./RemindersStackRoute";
 
 const Tabs = createBottomTabNavigator();
@@ -30,6 +30,7 @@ const MainTabs = () => {
       tabBarOptions={{
         activeTintColor: "tomato",
         inactiveTintColor: "grey",
+        keyboardHidesTabBar: Platform.OS == "ios" ? false : true,
       }}
     >
       <Tabs.Screen name="SideEffects" component={SideEffectsStackRoute} />
