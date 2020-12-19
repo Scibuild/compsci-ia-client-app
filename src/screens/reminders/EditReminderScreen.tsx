@@ -1,22 +1,22 @@
 import React from "react";
-import {
-  StyleSheet,
-  Platform,
-  Button,
-} from "react-native";
+import { Button, Modal, View, StyleSheet } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RemindersParamList } from "../../navigation/RemindersStackRoute";
-import { BigText, BoldText, KeyboardAvoidingScrollView } from "../../components/formatted";
+import { BigText, KeyboardAvoidingScrollView } from "../../components/formatted";
 import { FormattedTextInput } from "../../components/formatted";
-import { RouteProp, useFocusEffect } from "@react-navigation/native";
-import { useReminderStore } from "../../providers/RemindersStore";
+import { RouteProp } from "@react-navigation/native";
+import { ReminderTime, ReminderTimeFromString, ReminderTimeToString, useReminderStore } from "../../providers/RemindersStore";
 import { useCustomBackButton } from '../../hooks/useBackButton';
+import { TextInputList } from '../../components/TextInputList';
+import { SpreadTimesModal } from "../../components/SpreadTimesModal";
+import { timeRE } from "../../lib/regularExpressions";
 
 
 type EditRemindersScreenProp = {
   navigation: StackNavigationProp<RemindersParamList, 'Edit'>,
   route: RouteProp<RemindersParamList, 'Edit'>
 }
+
 
 export const EditReminderScreen: React.FC<EditRemindersScreenProp> = ({ navigation, route }) => {
   let id: string;
@@ -27,12 +27,15 @@ export const EditReminderScreen: React.FC<EditRemindersScreenProp> = ({ navigati
   }
   const reminder = useReminderStore(state => state.reminders.find(r => r.id === id))
 
-  const [drug, setDrug] = React.useState<string>(reminder === undefined ? "" : reminder.drug);
-  //const [drugErr, setDrugErr] = React.useState<boolean>(false);
-  const [instructions, setInstructions] = React.useState<string>(reminder === undefined ? "" : reminder.instructions);
-  //const [instErr, setInstErr] = React.useState<boolean>(false);
-  const [repeatEveryDays, setRepeatEveryDays] = React.useState<string>(reminder === undefined ? "" : reminder.repeatEveryDays.toString());
-  //const [repErr, setRepErr] = React.useState<boolean>(false);
+  const [drug, setDrug] = React.useState<string>(reminder == null ? "" : reminder.drug);
+  const [instructions, setInstructions] = React.useState<string>(reminder == null ? "" : reminder.instructions);
+  const [times, setTimes] = React.useState<string[]>(() => reminder?.times == null ? [] : reminder.times.map(ReminderTimeToString));
+
+  const [timeModalVisible, setTimeModalVisible] = React.useState(false)
+  const [beginningTime, setbeginningTime] = React.useState("")
+  const [endTime, setEndTime] = React.useState("")
+  const [drugCount, setDrugCount] = React.useState("")
+
   const replaceReminder = useReminderStore(state => state.replaceReminder)
   const addReminder = useReminderStore(state => state.addReminder)
   const deleteReminder = useReminderStore(state => state.deleteReminder)
@@ -46,21 +49,21 @@ export const EditReminderScreen: React.FC<EditRemindersScreenProp> = ({ navigati
     let filledOut = true;
     filledOut &&= drug.trim() !== "";
     filledOut &&= instructions.trim() !== "";
-    filledOut &&= repeatEveryDays.trim() !== "";
+    filledOut &&= times.every(time => timeRE.test(time.trim()))
     if (!filledOut) { return true; }
     const newReminder = {
       drug,
       instructions,
-      repeatEveryDays: Number(repeatEveryDays),
+      // repeatEveryDays: Number(repeatEveryDays),
       enabled: true,
-      times: []
+      times: times.map(ReminderTimeFromString)
     };
     replaceReminder(id, newReminder);
     navigation.goBack()
     return true;
-  }, [instructions, drug, repeatEveryDays])
+  }, [instructions, drug, times /*, repeatEveryDays */])
 
-  useCustomBackButton(onBackPress, [instructions, drug, repeatEveryDays], navigation)
+  useCustomBackButton(onBackPress, [instructions, drug, times /*, repeatEveryDays */], navigation)
 
   return (
     <KeyboardAvoidingScrollView>
@@ -78,56 +81,66 @@ export const EditReminderScreen: React.FC<EditRemindersScreenProp> = ({ navigati
         placeholder="Instructions"
         err={instructions.trim() === ""}
       />
-      <BigText>Repeat every how many days (0 for never)</BigText>
+      {/* <BigText>Repeat every how many days (0 for never)</BigText>
       <FormattedTextInput
         value={repeatEveryDays}
         onChangeText={(v) => setRepeatEveryDays(v.replace(/\D+/, ''))}
         placeholder="How many days"
         keyboardType="numeric"
         err={repeatEveryDays.trim() === ""}
+      /> */}
+      <BigText>Time (hh:mm)</BigText>
+
+      <TextInputList
+        value={times}
+        onChangeText={setTimes}
+        onChangeTextIndiv={(v) => v.replace(/[^0-9:]+/, '')}
+        placeholder="12:00"
+        err={(time) => time !== "" && !timeRE.test(time.trim())}
       />
-      {id !== "" ?
-        <Button title="Delete" onPress={() => {
-          navigation.goBack()
-          deleteReminder(id)
-        }} /> :
-        <Button title="Add" onPress={() => {
-          const newReminder = {
-            drug,
-            instructions,
-            repeatEveryDays: Number(repeatEveryDays),
-            enabled: true,
-            times: []
-          };
-          addReminder(newReminder);
-          navigation.goBack()
-        }} />
-      }
+
+
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-evenly",
+          alignItems: "center",
+          marginTop: 30,
+        }}
+      >
+        <Button title="Generate Times" onPress={() => setTimeModalVisible(true)} />
+
+
+        {id !== "" ? // whether this is a new one or editing
+          <Button title="Delete" onPress={() => {
+            navigation.goBack()
+            deleteReminder(id)
+          }} /> :
+          <Button title="Add" onPress={() => {
+            const newReminder = {
+              drug,
+              instructions,
+              // repeatEveryDays: Number(repeatEveryDays),
+              enabled: true,
+              times: []
+            };
+            addReminder(newReminder);
+            navigation.goBack()
+          }} />
+        }
+      </View>
+      <SpreadTimesModal
+        visible={timeModalVisible}
+        setVisible={setTimeModalVisible}
+        beginningTime={beginningTime}
+        setBeginningTime={setbeginningTime}
+        endTime={endTime}
+        setEndTime={setEndTime}
+        number={drugCount}
+        setNumber={setDrugCount}
+        setTimes={setTimes}
+      />
     </KeyboardAvoidingScrollView>
   );
 };
 
-const styles = StyleSheet.create({
-  slider: {
-    marginTop: 0,
-    marginBottom: 20,
-
-    alignSelf: "stretch",
-  },
-  text: {
-    margin: 10,
-    marginBottom: 0,
-    padding: 5,
-    paddingBottom: 0,
-    fontSize: 20,
-    alignSelf: "stretch",
-  },
-  datetimepicker: {
-    width: Platform.isPad ? 300 : "100%",
-    alignSelf: "center",
-    zIndex: 10,
-  },
-  submit: {
-    alignItems: "center",
-  },
-});

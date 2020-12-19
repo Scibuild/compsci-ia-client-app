@@ -1,9 +1,6 @@
 import React, { useCallback, useLayoutEffect } from "react";
 import { ProfileItemEdit } from "../../components/ProfileItemEdit";
-import {
-  KeyboardAvoidingScrollView,
-  ScrollContainer,
-} from "../../components/formatted";
+import { KeyboardAvoidingScrollView } from "../../components/formatted";
 import { ProfileContext } from "../../providers/ProfileProvider";
 import { useFocusEffect } from "@react-navigation/native";
 import { BackHandler } from "react-native";
