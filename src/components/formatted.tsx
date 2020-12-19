@@ -60,16 +60,16 @@ export const Container: React.FC<{ style?: any }> = ({ style, children }) => {
 
 export const KeyboardAvoidingScrollView: React.FC<{}> = ({ children }) => {
   return (
-    <KeyboardAvoidingView
-      contentContainerStyle={styles.kasvWrapper}
-      behavior={Platform.OS === "ios" ? "height" : "padding"}
-      enabled
-      keyboardVerticalOffset={40}
-    >
-      <ScrollView contentContainerStyle={styles.kasvContainer}>
-        {children}
-      </ScrollView>
-    </KeyboardAvoidingView>
+    // <KeyboardAvoidingView
+    //   contentContainerStyle={styles.kasvWrapper}
+    //   behavior={Platform.OS === "ios" ? "padding" : "height"}
+    //   enabled
+    //   keyboardVerticalOffset={80}
+    // >
+    <ScrollView keyboardShouldPersistTaps='always' contentContainerStyle={styles.kasvContainer}>
+      {children}
+    </ScrollView>
+    // </KeyboardAvoidingView>
   );
 };
 
@@ -104,8 +104,10 @@ const styles = StyleSheet.create({
 
   textInput: {
     margin: 10,
+    marginTop: 0,
     padding: 5,
-    fontSize: 20,
+    paddingTop: 2,
+    fontSize: 18,
     alignSelf: "stretch",
 
     ...Platform.select({
@@ -122,7 +124,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   bigText: {
-    fontSize: 20,
+    fontSize: 18,
   },
   boldText: {
     fontWeight: "bold",
@@ -131,12 +133,11 @@ const styles = StyleSheet.create({
   kasvContainer: {
     padding: 20,
     paddingHorizontal: Platform.isPad ? 200 : 20,
-    justifyContent: "center",
-    // height: "100%",
   },
   kasvWrapper: {
     flex: 1,
-    justifyContent: "center",
+    height: "100%",
+    justifyContent: "flex-end",
     alignItems: "center",
   },
 });
