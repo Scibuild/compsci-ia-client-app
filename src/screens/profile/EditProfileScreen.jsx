@@ -1,6 +1,9 @@
 import React, { useCallback, useLayoutEffect } from "react";
 import { ProfileItemEdit } from "../../components/ProfileItemEdit";
-import { ScrollContainer } from "../../components/formatted";
+import {
+  KeyboardAvoidingScrollView,
+  ScrollContainer,
+} from "../../components/formatted";
 import { ProfileContext } from "../../providers/ProfileProvider";
 import { useFocusEffect } from "@react-navigation/native";
 import { BackHandler } from "react-native";
@@ -47,7 +50,7 @@ export const EditProfileScreen = ({ navigation }) => {
 
   let profileToRender = tempProfile.length === 0 ? profile : tempProfile;
   return (
-    <ScrollContainer>
+    <KeyboardAvoidingScrollView>
       {profileToRender.map(({ name, id, value }) => (
         <ProfileItemEdit
           name={name}
@@ -57,7 +60,7 @@ export const EditProfileScreen = ({ navigation }) => {
         />
       ))}
       {/* <Button title="State broken" onPress={rebuildState} /> */}
-    </ScrollContainer>
+    </KeyboardAvoidingScrollView>
   );
 };
 
