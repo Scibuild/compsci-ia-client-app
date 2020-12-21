@@ -16,6 +16,7 @@ interface EditProfileScreenProps {
 
 const profileSelector = (s: ProfileStoreState) => s.profile;
 const temporaryProfileSelector = (s: ProfileStoreState) => s.temporaryProfile;
+const startProfileChangesSelector = (s: ProfileStoreState) => s.startProfileChanges;
 const dropProfileChangesSelector = (s: ProfileStoreState) => s.dropProfileChanges;
 const commitProfileChangesSelector = (s: ProfileStoreState) => s.commitProfileChanges;
 const setFieldSelector = (s: ProfileStoreState) => s.setField;
@@ -23,6 +24,7 @@ const setFieldSelector = (s: ProfileStoreState) => s.setField;
 export const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => {
   const profile = useProfileStore(profileSelector);
   const temporaryProfile = useProfileStore(temporaryProfileSelector);
+  const startProfileChanges = useProfileStore(startProfileChangesSelector);
   const dropProfileChanges = useProfileStore(dropProfileChangesSelector);
   const commitProfileChanges = useProfileStore(commitProfileChangesSelector);
   const setField = useProfileStore(setFieldSelector);
@@ -62,6 +64,7 @@ export const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation
           key={id}
           value={value}
           onChangeText={setField(id)}
+          onChangeAnyText={startProfileChanges}
         />
       ))}
       {/* <Button title="State broken" onPress={rebuildState} /> */}

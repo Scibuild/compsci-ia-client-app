@@ -19,43 +19,6 @@ export interface ProfileItem {
   name: string, id: string, value: string | string[]
 }
 
-export const useProfileStore = create<ProfileStoreState>(persist((set) => ({
-  profile: initialState.profile,
-  temporaryProfile: initialState.temporaryProfile,
-  commitProfileChanges: () => set(produce(commitProfileChanges)),
-  startProfileChanges: () => set(produce(startProfileChanges)),
-  dropProfileChanges: () => set(produce(dropProfileChanges)),
-  setField: (fieldName) => (fieldValue) => set(produce(setField(fieldName, fieldValue))),
-  rebuildState: () => set(produce(rebuildState)),
-}), {
-  name: "profile",
-  storage: AsyncStorage
-}))
-
-const commitProfileChanges = (state: ProfileStoreState) => {
-  if (state.temporaryProfile.length !== 0) {
-    state.profile = state.temporaryProfile;
-    state.temporaryProfile = [];
-  }
-}
-const startProfileChanges = (state: ProfileStoreState) => {
-  state.temporaryProfile = state.profile // immer should handle the deep clone here
-}
-const dropProfileChanges = (state: ProfileStoreState) => {
-  state.temporaryProfile = []
-}
-const setField = (fieldName: string, fieldValue: string | string[]) => (state: ProfileStoreState) => {
-  if (state.temporaryProfile.length === 0) { return }
-  const field = state.temporaryProfile.find((f) => f.id === fieldName);
-  if (field === undefined) { return }
-  field.value = fieldValue;
-}
-
-const rebuildState = (state: ProfileStoreState) => {
-  state.profile = initialState.profile;
-  state.temporaryProfile = [];
-}
-
 const initialState: { profile: ProfileItem[], temporaryProfile: ProfileItem[] } = {
   profile: [
     { name: "Name", id: "name", value: "" },
@@ -77,3 +40,43 @@ const initialState: { profile: ProfileItem[], temporaryProfile: ProfileItem[] } 
   ],
   temporaryProfile: [],
 };
+
+
+export const useProfileStore = create<ProfileStoreState>(persist((set) => ({
+  profile: initialState.profile,
+  temporaryProfile: initialState.temporaryProfile,
+  commitProfileChanges: () => set(produce(commitProfileChanges)),
+  startProfileChanges: () => set(produce(startProfileChanges)),
+  dropProfileChanges: () => set(produce(dropProfileChanges)),
+  setField: (fieldName) => (fieldValue) => set(produce(setField(fieldName, fieldValue))),
+  rebuildState: () => set(produce(rebuildState)),
+}), {
+  name: "profile",
+  storage: AsyncStorage
+}))
+
+const commitProfileChanges = (state: ProfileStoreState) => {
+  if (state.temporaryProfile.length !== 0) {
+    state.profile = state.temporaryProfile;
+    state.temporaryProfile = [];
+  }
+}
+const startProfileChanges = (state: ProfileStoreState) => {
+  if (state.temporaryProfile.length === 0) {
+    state.temporaryProfile = state.profile // immer should handle the deep clone here
+  }
+}
+const dropProfileChanges = (state: ProfileStoreState) => {
+  state.temporaryProfile = []
+}
+const setField = (fieldName: string, fieldValue: string | string[]) => (state: ProfileStoreState) => {
+  if (state.temporaryProfile.length === 0) { return }
+  const field = state.temporaryProfile.find((f) => f.id === fieldName);
+  if (field === undefined) { return }
+  field.value = fieldValue;
+}
+
+const rebuildState = (state: ProfileStoreState) => {
+  state.profile = initialState.profile;
+  state.temporaryProfile = [];
+}

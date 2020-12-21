@@ -7,14 +7,20 @@ interface ProfileItemEditProps {
   name: string,
   value: string | string[],
   onChangeText: (v: string | string[]) => void,
+  onChangeAnyText?: (v?: string | string[]) => void,
 }
-export const ProfileItemEdit: React.FC<ProfileItemEditProps> = ({ name, value, onChangeText }) => {
+export const ProfileItemEdit: React.FC<ProfileItemEditProps> = ({ name, value, onChangeText, onChangeAnyText }) => {
   if (Array.isArray(value)) {
     // let paddedarray = value.concat([""]);
     return (
       <View>
         <BigText>{name}: </BigText>
-        <TextInputList value={value} onChangeText={onChangeText} />
+        <TextInputList
+          value={value}
+          onChangeText={(v) => {
+            onChangeAnyText?.(v);
+            onChangeText(v)
+          }} />
         {/* {paddedarray.map((val, i) => (
           <FormattedTextInput
             placeholder="New..."
@@ -36,7 +42,12 @@ export const ProfileItemEdit: React.FC<ProfileItemEditProps> = ({ name, value, o
   return (
     <View>
       <BigText>{name}: </BigText>
-      <FormattedTextInput value={value} onChangeText={onChangeText} />
+      <FormattedTextInput
+        value={value}
+        onChangeText={(v) => {
+          onChangeAnyText?.(v);
+          onChangeText(v)
+        }} />
     </View>
   );
 };
