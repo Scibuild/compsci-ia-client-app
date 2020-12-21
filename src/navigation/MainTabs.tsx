@@ -3,13 +3,21 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import SideEffectsStackRoute from "./SideEffectsStackRoute";
 import ProfileStackRoute from "./ProfileStackRoute";
 import { AntDesign } from "@expo/vector-icons";
-import { Platform, Text } from "react-native";
+import { Platform } from "react-native";
 import ReminderStackRoute from "./RemindersStackRoute";
+import { RouteProp } from '@react-navigation/native';
 
-const Tabs = createBottomTabNavigator();
+type TabsParamsList = {
+  SideEffects: undefined;
+  Profile: undefined;
+  Reminders: undefined;
+}
 
-const tabBarIcon = route => ({ focused, color, size }) => {
-  let iconName;
+const Tabs = createBottomTabNavigator<TabsParamsList>();
+
+type TabBarIconProps = { focused: boolean, color: string, size: number };
+const tabBarIcon = (route: RouteProp<TabsParamsList, any>): React.FC<TabBarIconProps> => ({ focused, color, size }) => {
+  let iconName = "";
   if (route.name === "SideEffects") {
     iconName = focused ? "frown" : "frowno";
   } else if (route.name === "Profile") {
@@ -21,7 +29,7 @@ const tabBarIcon = route => ({ focused, color, size }) => {
   return <AntDesign name={iconName} color={color} size={size} />;
 };
 
-const MainTabs = () => {
+const MainTabs: React.FC<{}> = () => {
   return (
     <Tabs.Navigator
       screenOptions={({ route }) => ({

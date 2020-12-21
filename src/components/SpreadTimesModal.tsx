@@ -1,9 +1,8 @@
 import React from 'react'
-import { TouchableNativeFeedback, Modal, StyleSheet, View, Text, Animated } from 'react-native'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
+import { TouchableNativeFeedback, Modal, StyleSheet, View, Text } from 'react-native'
 import { BigText, BoldText, FormattedTextInput } from './formatted'
 import { timeRE } from '../lib/regularExpressions';
-import { ReminderTimeString, ReminderTimeNumbers, ReminderTimeFromString, ReminderTimeToString, ReminderTimeFromNumbers } from '../providers/RemindersStore';
+import { ReminderTimeToString, ReminderTimeFromString, ReminderTimeFromNumbers } from '../providers/RemindersStore';
 
 export interface SpreadTimeModalProps {
   visible: boolean,
@@ -73,25 +72,25 @@ export const SpreadTimesModal: React.FC<SpreadTimeModalProps> = (
 
 function calculateTimes(beginningTime: string, endTime: string, number: string): string[] {
   // T for time, M for minutes, N for number
-  let beginningTimeT = ReminderTimeFromString(beginningTime)
-  let beginningTimeM = beginningTimeT.minute + beginningTimeT.hour * 60
+  const beginningTimeT = ReminderTimeFromString(beginningTime)
+  const beginningTimeM = beginningTimeT.minute + beginningTimeT.hour * 60
 
-  let endTimeT = ReminderTimeFromString(endTime)
-  let endTimeM = endTimeT.minute + endTimeT.hour * 60
+  const endTimeT = ReminderTimeFromString(endTime)
+  const endTimeM = endTimeT.minute + endTimeT.hour * 60
 
-  let differenceM = endTimeM - beginningTimeM
+  const differenceM = endTimeM - beginningTimeM
 
-  let numberN = Number(number)
-  let times: string[] = []
+  const numberN = Number(number)
+  const times: string[] = []
 
   if (numberN < 2) {
     return [ReminderTimeToString(beginningTimeT)]
   }
 
   for (let i = 0; i < numberN; i++) { // i goes from 0 to numberN-1, if numberN = 3, then 0,1,2
-    let minuteOffset = differenceM / (numberN - 1) * i; // first has no offset (beginning), last is at end
-    let reminderM = minuteOffset + beginningTimeM;
-    let reminderT = ReminderTimeFromNumbers(Math.floor(reminderM / 60), Math.round(reminderM % 60))
+    const minuteOffset = differenceM / (numberN - 1) * i; // first has no offset (beginning), last is at end
+    const reminderM = minuteOffset + beginningTimeM;
+    const reminderT = ReminderTimeFromNumbers(Math.floor(reminderM / 60), Math.round(reminderM % 60))
     times.push(ReminderTimeToString(reminderT))
   }
 

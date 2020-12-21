@@ -1,6 +1,6 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import React, { useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Switch } from "react-native-gesture-handler";
 import { AddableListView } from '../../components/AddableListView';
 import { BigText } from '../../components/formatted';

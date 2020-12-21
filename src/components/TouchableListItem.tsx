@@ -1,9 +1,9 @@
-import React, { FC, ReactChild } from 'react';
+import React from 'react';
 import { RectButton } from 'react-native-gesture-handler';
 import { StyleSheet, View } from 'react-native';
 
-type TouchableListItemType = { onPress: () => any, children: React.ReactNode }
-export const TouchableListItem = ({ onPress, children }: TouchableListItemType) => {
+type TouchableListItemProps = { onPress: () => any, children: React.ReactNode }
+export const TouchableListItem: React.FC<TouchableListItemProps> = ({ onPress, children }) => {
     return (
         <RectButton
             style={styles.listItemTouchable}

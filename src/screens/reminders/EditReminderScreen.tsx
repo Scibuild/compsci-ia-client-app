@@ -1,11 +1,11 @@
 import React from "react";
-import { Button, Modal, View, StyleSheet } from "react-native";
+import { Button, View } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RemindersParamList } from "../../navigation/RemindersStackRoute";
 import { BigText, KeyboardAvoidingScrollView } from "../../components/formatted";
 import { FormattedTextInput } from "../../components/formatted";
 import { RouteProp } from "@react-navigation/native";
-import { ReminderTime, ReminderTimeFromString, ReminderTimeToString, useReminderStore } from "../../providers/RemindersStore";
+import { ReminderTimeFromString, ReminderTimeToString, useReminderStore } from "../../providers/RemindersStore";
 import { useCustomBackButton } from '../../hooks/useBackButton';
 import { TextInputList } from '../../components/TextInputList';
 import { SpreadTimesModal } from "../../components/SpreadTimesModal";
@@ -41,7 +41,7 @@ export const EditReminderScreen: React.FC<EditRemindersScreenProp> = ({ navigati
   const deleteReminder = useReminderStore(state => state.deleteReminder)
 
 
-  let onBackPress = React.useCallback(() => {
+  const onBackPress = React.useCallback(() => {
     if (id == "") {
       navigation.goBack()
       return true;
@@ -63,7 +63,7 @@ export const EditReminderScreen: React.FC<EditRemindersScreenProp> = ({ navigati
     return true;
   }, [instructions, drug, times /*, repeatEveryDays */])
 
-  useCustomBackButton(onBackPress, [instructions, drug, times /*, repeatEveryDays */], navigation)
+  useCustomBackButton(onBackPress, [instructions, drug, times], navigation.setOptions)
 
   return (
     <KeyboardAvoidingScrollView>

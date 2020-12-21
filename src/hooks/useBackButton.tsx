@@ -1,11 +1,14 @@
-import React from 'react';
-import { NavigationProp, useFocusEffect } from "@react-navigation/native";
-import { HeaderBackButton } from "@react-navigation/stack";
+import React, { ReactNode } from 'react';
+import { useFocusEffect } from "@react-navigation/native";
+import { HeaderBackButton, StackHeaderLeftButtonProps, StackNavigationOptions } from "@react-navigation/stack";
 import { DependencyList, useCallback, useLayoutEffect } from "react";
-import { BackHandler, ButtonProps } from "react-native";
+import { BackHandler } from "react-native";
 
 
-export function useCustomBackButton(onBackPress: (() => boolean), updateDependency: DependencyList, navigation: NavigationProp<any, any>) {
+export function useCustomBackButton(
+  onBackPress: (() => boolean),
+  updateDependency: DependencyList,
+  setOptions: (options: Partial<StackNavigationOptions>) => void): void {
   useFocusEffect(
     useCallback(() => {
       BackHandler.addEventListener("hardwareBackPress", onBackPress);
@@ -16,10 +19,10 @@ export function useCustomBackButton(onBackPress: (() => boolean), updateDependen
   );
 
   useLayoutEffect(() => {
-    let newBackButton = (props: ButtonProps) => {
+    const newBackButton = (props: StackHeaderLeftButtonProps): ReactNode => {
       return (<HeaderBackButton {...props} onPress={onBackPress} />);
     };
-    navigation.setOptions({
+    setOptions({
       headerLeft: newBackButton,
     });
   }, updateDependency);

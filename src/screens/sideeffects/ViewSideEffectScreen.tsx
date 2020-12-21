@@ -1,19 +1,26 @@
-import React, { useContext } from "react";
+import React from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
 import { ItemSeparator, Container } from "../../components/formatted";
-import { SideEffectContext } from "../../providers/SideEffectsProvider";
+import { useSideEffectStore } from "../../providers/SideEffectsStore";
 import { FlatList } from "react-native-gesture-handler";
+import { SideEffectsParamList } from "../../navigation/SideEffectsStackRoute";
+import { RouteProp } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 
-export const EditSideEffectScreen = ({ route, navigation }) => {
-  const { state, deleteSideEffectById } = useContext(SideEffectContext);
+export interface ViewSideEffectScreenProps {
+  navigation: StackNavigationProp<SideEffectsParamList, "ViewSideEffect">,
+  route: RouteProp<SideEffectsParamList, "ViewSideEffect">
+}
 
-  const instances = state[route.params.index]
-    ? state[route.params.index].instances
-    : null;
+export const ViewSideEffectScreen: React.FC<ViewSideEffectScreenProps> = ({ route, navigation }) => {
+  const sideEffects = useSideEffectStore(s => s.sideEffects)
+  const deleteSideEffectById = useSideEffectStore(s => s.deleteSideEffectById)
+
+  const instances = sideEffects[route.params.index].instances
 
   return (
     <Container>
-      <Text style={styles.listItem}>Side effect: {route.params.name}</Text>
+      {/* <Text style={styles.listItem}>Side effect: {route.params.name}</Text> */}
       <FlatList
         data={instances}
         renderItem={({ item }) => (

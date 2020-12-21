@@ -1,12 +1,12 @@
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
+import { ProfileItem } from '../providers/ProfileStore';
 
-type Profile = {name: string, id: string, value: string | string[]}[]
 
-export const generateHTML = (profile: Profile) => {
-  let htmlElements = profile.map((item) => {
+export const generateHTML = (profile: ProfileItem[]): string => {
+  const htmlElements = profile.map((item) => {
     if(Array.isArray(item.value)) {
-      let listElements = item.value.map((val) => `<li><b>${val}</b></li>`);
+      const listElements = item.value.map((val) => `<li><b>${val}</b></li>`);
       return `
       <p id="${item.id}">
         ${item.name}: 
@@ -48,7 +48,7 @@ export const generateHTML = (profile: Profile) => {
   return htmlContent;
 }
 
-export const generatePDF = async (profile: Profile) => {
+export const generatePDF = async (profile: ProfileItem[]): Promise<void> => {
     try {
       const { uri } = await Print.printToFileAsync({ html: generateHTML(profile) });
       await Sharing.shareAsync(uri);

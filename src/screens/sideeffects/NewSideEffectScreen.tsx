@@ -1,22 +1,29 @@
-import React, { useState, useContext } from "react";
-import { ScrollView, TextInput } from "react-native-gesture-handler";
+import React, { useState } from "react";
+import { ScrollView } from "react-native-gesture-handler";
 import {
   View,
   Text,
   StyleSheet,
   KeyboardAvoidingView,
-  Slider,
   Platform,
+  Button
 } from "react-native";
-import { Button } from "react-native";
-import { SideEffectContext } from "../../providers/SideEffectsProvider";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import Slider from '@react-native-community/slider';
+import { useSideEffectStore } from "../../providers/SideEffectsStore";
+import DateTimePicker, { Event } from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-community/picker";
 import { FormattedTextInput } from "../../components/formatted";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { SideEffectsParamList } from "../../navigation/SideEffectsStackRoute";
 
-const DateTimePickerCP = ({ value, onChange }) => {
+interface DateTimePickerCPProps {
+  value: Date,
+  onChange: (e: Event, t: Date | undefined) => void
+}
+
+const DateTimePickerCP: React.FC<DateTimePickerCPProps> = ({ value, onChange }) => {
   const [show, setShow] = useState(false);
-  const [mode, setMode] = useState("time");
+  const [mode, setMode] = useState<"time" | "date">("time");
 
   const ios = Platform.OS === "ios";
   const iosTimeButton = !ios || mode === "date";
@@ -60,25 +67,30 @@ const DateTimePickerCP = ({ value, onChange }) => {
           }}
           mode={mode}
           display="default"
-          // maximumDate={new Date(2300, 10, 20)}
-          is24hour={true}
+        // maximumDate={new Date(2300, 10, 20)}
+        // is24hour={true}
         />
       )}
     </View>
   );
 };
 
-export const NewSideEffectScreen = ({ navigation }) => {
-  const { state, addSideEffect } = useContext(SideEffectContext);
+type NewSideEffectScreenProp = {
+  navigation: StackNavigationProp<SideEffectsParamList, 'NewSideEffect'>,
+}
+
+export const NewSideEffectScreen: React.FC<NewSideEffectScreenProp> = ({ navigation }) => {
+  const sideEffects = useSideEffectStore(s => s.sideEffects)
+  const addSideEffect = useSideEffectStore(s => s.addSideEffect)
 
   const [time, setTime] = useState(new Date());
   const [severity, setSeverity] = useState(5);
   const [sideEffectIdx, setSideEffectIdx] = useState(() =>
-    state.length === 0 ? -1 : 0,
+    sideEffects.length === 0 ? -1 : 0,
   ); // default value if there are no side effects to 'other' == -1
   const other = "Other...";
   const [sideEffectName, setSideEffectName] = useState(() =>
-    sideEffectIdx === -1 ? "" : state[sideEffectIdx].name,
+    sideEffectIdx === -1 ? "" : sideEffects[sideEffectIdx].name,
   );
 
   const [errName, setErrName] = useState(false);
@@ -94,15 +106,16 @@ export const NewSideEffectScreen = ({ navigation }) => {
         <Picker
           selectedValue={sideEffectIdx}
           onValueChange={itemValue => {
-            setSideEffectIdx(itemValue);
-            if (itemValue !== -1) {
-              setSideEffectName(state[itemValue].name);
+            const itemIdx = Number(itemValue.toString())
+            setSideEffectIdx(itemIdx);
+            if (itemIdx !== -1) {
+              setSideEffectName(sideEffects[itemIdx].name);
             } else {
               setSideEffectName("");
             }
           }}
         >
-          {state
+          {sideEffects
             .map(({ name }, idx) => ({ name, idx }))
             .concat([{ name: other, idx: -1 }])
             .map(({ name, idx }) => (
@@ -137,17 +150,15 @@ export const NewSideEffectScreen = ({ navigation }) => {
         <View style={styles.submit}>
           <Button
             title="Submit"
-            style={styles.submit}
+            // style={styles.submit}
             onPress={() => {
               if (sideEffectName) {
                 console.log(sideEffectName);
-                addSideEffect({
-                  name: sideEffectName,
-                  instance: {
+                addSideEffect(sideEffectName,
+                  {
                     time: time.getTime(),
                     severity: Math.round(severity),
-                  },
-                });
+                  });
                 navigation.goBack();
               } else {
                 setErrName(!sideEffectName);
@@ -163,7 +174,7 @@ export const NewSideEffectScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    paddingHorizontal: Platform.isPad ? 200 : 20,
+    paddingHorizontal: 20,
     justifyContent: "center",
     // height: "100%",
   },
@@ -187,7 +198,7 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
   },
   datetimepicker: {
-    width: Platform.isPad ? 300 : "100%",
+    width: "100%",
     alignSelf: "center",
     zIndex: 10,
   },

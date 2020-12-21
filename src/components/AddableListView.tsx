@@ -5,7 +5,7 @@ import { ItemSeparator } from "./formatted";
 import { AddButton } from "./AddButton";
 
 type AddableListViewProps<T> = { data: Array<T>, renderItem: ListRenderItem<T>, onAdd: any }
-export const AddableListView = ({ data, renderItem, onAdd }: AddableListViewProps<any>) => {
+export const AddableListView: React.FC<AddableListViewProps<any>> = ({ data, renderItem, onAdd }) => {
   return (
     <View style={{ flex: 1 }}>
       <FlatList

@@ -3,7 +3,12 @@ import { View } from "react-native";
 import { FormattedTextInput, BigText } from "./formatted";
 import { TextInputList } from "./TextInputList";
 
-export const ProfileItemEdit = ({ name, value, onChangeText }) => {
+interface ProfileItemEditProps {
+  name: string,
+  value: string | string[],
+  onChangeText: (v: string | string[]) => void,
+}
+export const ProfileItemEdit: React.FC<ProfileItemEditProps> = ({ name, value, onChangeText }) => {
   if (Array.isArray(value)) {
     // let paddedarray = value.concat([""]);
     return (

@@ -1,5 +1,4 @@
 import React from "react";
-import { View } from "react-native";
 import { FormattedTextInput } from "./formatted";
 
 interface TextInputListProps {
@@ -14,7 +13,7 @@ interface TextInputListProps {
 
 export const TextInputList: React.FC<TextInputListProps> = ({
     value = [],
-    onChangeText = () => { },
+    onChangeText = () => { return; },
     onChangeTextIndiv = v => v,
     placeholder = "New...",
     err = () => false,
@@ -22,7 +21,7 @@ export const TextInputList: React.FC<TextInputListProps> = ({
     style = {}
 }) => {
 
-    let paddedarray = value.concat([""]);
+    const paddedarray = value.concat([""]);
     return (
         <>{
             paddedarray.map((val, i) => (
@@ -34,7 +33,7 @@ export const TextInputList: React.FC<TextInputListProps> = ({
                     err={err(val)}
                     keyboardType={keyboardType}
                     onChangeText={newitem => {
-                        let newval = paddedarray
+                        const newval = paddedarray
                             .map((v, j) => (j === i ? onChangeTextIndiv(newitem) : v))
                             .filter(v => v !== "");
                         onChangeText(newval);

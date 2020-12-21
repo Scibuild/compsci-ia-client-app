@@ -1,8 +1,12 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import { BigText, BoldText } from "./formatted";
 
-export const ProfileItemView = ({ name, value }) => {
+interface ProfileItemViewProps {
+  name: string,
+  value: string | string[],
+}
+export const ProfileItemView: React.FC<ProfileItemViewProps> = ({ name, value }) => {
   if (Array.isArray(value)) {
     return (
       <View>

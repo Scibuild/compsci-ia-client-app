@@ -4,7 +4,6 @@ import {
   StyleSheet,
   Platform,
   Text,
-  KeyboardAvoidingView,
 } from "react-native";
 import { TextInput, ScrollView } from "react-native-gesture-handler";
 
@@ -12,7 +11,7 @@ export const Center: React.FC<{}> = ({ children }) => {
   return <View style={styles.centered}>{children}</View>;
 };
 
-export const ItemSeparator = () => <View style={styles.separator} />;
+export const ItemSeparator: React.FC<{}> = () => <View style={styles.separator} />;
 
 interface FormattedTextInputProps {
   onChangeText?: (text: string) => void,
@@ -132,7 +131,7 @@ const styles = StyleSheet.create({
 
   kasvContainer: {
     padding: 20,
-    paddingHorizontal: Platform.isPad ? 200 : 20,
+    paddingHorizontal: 20,
   },
   kasvWrapper: {
     flex: 1,

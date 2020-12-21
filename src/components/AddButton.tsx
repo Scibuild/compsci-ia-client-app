@@ -3,7 +3,8 @@ import { AntDesign } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { StyleSheet, Platform, View } from "react-native";
 
-export const AddButton = ({ onPress }) => {
+type AddButtonProps = { onPress: () => void };
+export const AddButton: React.FC<AddButtonProps> = ({ onPress }) => {
   return (
     <View style={styles.plusButtonContainer}>
       <TouchableOpacity style={styles.plusButton} onPress={onPress}>

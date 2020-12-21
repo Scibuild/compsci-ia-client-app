@@ -1,4 +1,3 @@
-import React, { useReducer, createContext, useEffect, useRef } from "react";
 import { uuidv4 } from "../lib/uuid";
 import { AsyncStorage } from "react-native";
 import create from "zustand";
@@ -18,7 +17,7 @@ export interface ReminderTime {
   minute: number,
   hour: number,
 }
-export const ReminderTimeFromNumbers = (hour: number, minute: number) => {
+export const ReminderTimeFromNumbers = (hour: number, minute: number): ReminderTime => {
   return { hour, minute }
 }
 export const ReminderTimeToString = (remtime: ReminderTime): string => {
@@ -53,7 +52,7 @@ type ReminderStoreState = {
 export const useReminderStore = create<ReminderStoreState>(persist((set, get) => ({
   reminders: initialState,
   toggleReminder: async (id: string) => {
-    let notifids = await toggleReminderNotif(id, get().reminders);
+    const notifids = await toggleReminderNotif(id, get().reminders);
     set(produce(toggleReminderFn(id, notifids)))
   },
   deleteReminder: async (id: string) => {
@@ -61,11 +60,11 @@ export const useReminderStore = create<ReminderStoreState>(persist((set, get) =>
     set(produce(deleteReminderFn(id)))
   },
   addReminder: async (rem: Reminder) => {
-    let notifids = await initialiseNotifications(rem);
+    const notifids = await initialiseNotifications(rem);
     set(produce(addReminderFn(rem, notifids)))
   },
   replaceReminder: async (id: string, rem: Reminder) => {
-    let oldrem = get().reminders.find(r => r.id === id);
+    const oldrem = get().reminders.find(r => r.id === id);
     cancelNotifications(oldrem)
     rem.notificationids = await initialiseNotificationsIfEnabled(rem, oldrem?.enabled);
     set(produce(replaceReminderFn(id, rem)))
@@ -77,7 +76,7 @@ export const useReminderStore = create<ReminderStoreState>(persist((set, get) =>
   // (on app startup), ensures notifications are always in sync with displayed data
   // default serialisation is with JSON, so JSON.parse converts back
   deserialize: async (stored) => {
-    let state = JSON.parse(stored)
+    const state = JSON.parse(stored)
     Notifications.cancelAllScheduledNotificationsAsync();
     //both updates notification ids and creates new notifs
     return initialiseAllNotifications(state)
@@ -86,7 +85,7 @@ export const useReminderStore = create<ReminderStoreState>(persist((set, get) =>
 
 
 async function toggleReminderNotif(id: string, reminders: Reminder[]) {
-  let rem = reminders.find((rem: Reminder) => rem.id === id);
+  const rem = reminders.find((rem: Reminder) => rem.id === id);
   if (rem?.enabled) {
     // cancel the currently scheduled notifications if they were previously enabled 
     cancelNotifications(rem);
@@ -100,7 +99,7 @@ async function toggleReminderNotif(id: string, reminders: Reminder[]) {
 }
 
 const toggleReminderFn = (id: string, notifids: string[]) => (state: ReminderStoreState) => {
-  let rem = state.reminders.find((rem: Reminder) => rem.id === id)
+  const rem = state.reminders.find((rem: Reminder) => rem.id === id)
   if (rem) {
     rem.enabled = !rem.enabled
     rem.notificationids = notifids
@@ -108,7 +107,7 @@ const toggleReminderFn = (id: string, notifids: string[]) => (state: ReminderSto
 }
 
 const deleteReminderFn = (id: string) => (state: ReminderStoreState) => {
-  let idx = state.reminders.findIndex((rem: Reminder) => rem.id === id)
+  const idx = state.reminders.findIndex((rem: Reminder) => rem.id === id)
   if (idx !== -1) {
     state.reminders.splice(idx, 1);
   }
@@ -132,7 +131,7 @@ const initialiseAllNotifications = async (state: ReminderStoreState) => {
     if (!rem.enabled) {
       return rem;
     }
-    let notifids = await initialiseNotifications(rem);
+    const notifids = await initialiseNotifications(rem);
     rem.notificationids = notifids;
     return rem
   }));
@@ -141,10 +140,10 @@ const initialiseAllNotifications = async (state: ReminderStoreState) => {
 }
 
 async function initialiseNotifications(reminder?: Reminder): Promise<string[]> {
-  let notifids: Promise<string>[] = [];
+  const notifids: Promise<string>[] = [];
   // eslint-disable-next-line no-unused-expressions
   reminder?.times.forEach(time => {
-    let notifid = Notifications.scheduleNotificationAsync({
+    const notifid = Notifications.scheduleNotificationAsync({
       content: {
         title: reminder?.drug,
         body: reminder?.instructions,
