@@ -7,6 +7,7 @@ import { View, StyleSheet } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useProfileStore, ProfileStoreState, ProfileItem } from "../providers/ProfileStore";
 import { generatePDF } from "../lib/generatepdf";
+import { HeaderButton, HeaderButtonContainer } from "../components/HeaderButton";
 
 export type ProfileParamsList = {
   View: undefined;
@@ -42,20 +43,16 @@ const ProfileStackRoute: React.FC<{}> = () => {
 
 const viewHeaderRight = (navigation: StackNavigationProp<ProfileParamsList, "View">, profile: ProfileItem[]) => () => {
   return (
-    <View style={styles.headerButtonContainer}>
-      <TouchableNativeFeedback
+    <HeaderButtonContainer>
+      <HeaderButton
         onPress={() => navigation.navigate("EditProfile")}
-        style={styles.headerButton}
-      >
-        <AntDesign name="edit" size={30} color="black" />
-      </TouchableNativeFeedback>
-      <TouchableNativeFeedback
+        icon="edit"
+      />
+      <HeaderButton
         onPress={() => generatePDF(profile)}
-        style={styles.headerButton}
-      >
-        <AntDesign name="export" size={30} color="black" />
-      </TouchableNativeFeedback>
-    </View>
+        icon="export"
+      />
+    </HeaderButtonContainer>
   );
 };
 

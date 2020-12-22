@@ -1,8 +1,10 @@
 import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import { createStackNavigator, StackNavigationProp } from "@react-navigation/stack";
 import { NewSideEffectScreen } from "../screens/sideeffects/NewSideEffectScreen";
 import { SideEffectHistoryScreen } from "../screens/sideeffects/SideEffectHistoryScreen";
 import { ViewSideEffectScreen } from "../screens/sideeffects/ViewSideEffectScreen";
+import { HeaderButton, HeaderButtonContainer } from "../components/HeaderButton";
+import { SideEffectsStoreState, useSideEffectStore } from "../providers/SideEffectsStore";
 
 export type SideEffectsParamList = {
   History: undefined;
@@ -12,7 +14,9 @@ export type SideEffectsParamList = {
 
 const Stack = createStackNavigator<SideEffectsParamList>();
 
+const deleteSideEffectSelector = (s: SideEffectsStoreState) => s.deleteSideEffectById;
 const SideEffectsStackRoute: React.FC<{}> = () => {
+  const deleteSideEffect = useSideEffectStore(deleteSideEffectSelector);
   return (
     <Stack.Navigator initialRouteName="History">
       <Stack.Screen
@@ -24,9 +28,25 @@ const SideEffectsStackRoute: React.FC<{}> = () => {
       <Stack.Screen
         name="ViewSideEffect"
         component={ViewSideEffectScreen}
-        options={({ route }) => ({ title: route.params.name })}
+        options={({ route, navigation }) => ({
+          title: route.params.name,
+          headerRight: viewHeaderRight(() => {
+            deleteSideEffect(route.params.id);
+            console.log("back")
+            navigation.navigate("History");
+          })
+        })}
       />
     </Stack.Navigator>
+  );
+};
+
+
+const viewHeaderRight = (deleteSideEffect: () => void) => () => {
+  return (
+    <HeaderButtonContainer>
+      <HeaderButton onPress={deleteSideEffect} icon="delete" />
+    </HeaderButtonContainer>
   );
 };
 

@@ -5,7 +5,7 @@ import { persist } from "zustand/middleware";
 import produce from "immer";
 
 
-type SideEffectsStoreState = {
+export type SideEffectsStoreState = {
   sideEffects: SideEffect[],
   addSideEffect: (name: string, instance: SideEffectInstance) => void,
   editSideEffectName: (id: string, newName: string) => void,

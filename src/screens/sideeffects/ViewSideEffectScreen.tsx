@@ -16,6 +16,7 @@ export const ViewSideEffectScreen: React.FC<ViewSideEffectScreenProps> = ({ rout
   const sideEffects = useSideEffectStore(s => s.sideEffects)
   const deleteSideEffectById = useSideEffectStore(s => s.deleteSideEffectById)
 
+  if (sideEffects[route.params.index] === undefined) { navigation.navigate("History"); return <></> }
   const instances = sideEffects[route.params.index].instances
 
   return (
@@ -40,15 +41,15 @@ export const ViewSideEffectScreen: React.FC<ViewSideEffectScreenProps> = ({ rout
         ListHeaderComponentStyle={styles.header}
       />
 
-      <View style={styles.delete}>
+      {/* <View style={styles.delete}>
         <Button
           title="Delete"
           onPress={() => {
             deleteSideEffectById(route.params.id);
-            navigation.goBack();
+            navigation.navigate("History")
           }}
         />
-      </View>
+      </View> */}
     </Container>
   );
 };
