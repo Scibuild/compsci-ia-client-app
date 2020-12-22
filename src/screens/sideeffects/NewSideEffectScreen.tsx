@@ -153,11 +153,10 @@ export const NewSideEffectScreen: React.FC<NewSideEffectScreenProp> = ({ navigat
             // style={styles.submit}
             onPress={() => {
               if (sideEffectName) {
-                console.log(sideEffectName);
                 addSideEffect(sideEffectName,
                   {
                     time: time.getTime(),
-                    severity: Math.round(severity),
+                    severity: severity,
                   });
                 navigation.goBack();
               } else {

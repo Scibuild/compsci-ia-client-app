@@ -14,9 +14,7 @@ export type SideEffectsParamList = {
 
 const Stack = createStackNavigator<SideEffectsParamList>();
 
-const deleteSideEffectSelector = (s: SideEffectsStoreState) => s.deleteSideEffectById;
 const SideEffectsStackRoute: React.FC<{}> = () => {
-  const deleteSideEffect = useSideEffectStore(deleteSideEffectSelector);
   return (
     <Stack.Navigator initialRouteName="History">
       <Stack.Screen
@@ -28,13 +26,8 @@ const SideEffectsStackRoute: React.FC<{}> = () => {
       <Stack.Screen
         name="ViewSideEffect"
         component={ViewSideEffectScreen}
-        options={({ route, navigation }) => ({
-          title: route.params.name,
-          headerRight: viewHeaderRight(() => {
-            deleteSideEffect(route.params.id);
-            console.log("back")
-            navigation.navigate("History");
-          })
+        options={({ route }) => ({
+          title: route.params.name
         })}
       />
     </Stack.Navigator>
@@ -42,12 +35,5 @@ const SideEffectsStackRoute: React.FC<{}> = () => {
 };
 
 
-const viewHeaderRight = (deleteSideEffect: () => void) => () => {
-  return (
-    <HeaderButtonContainer>
-      <HeaderButton onPress={deleteSideEffect} icon="delete" />
-    </HeaderButtonContainer>
-  );
-};
 
 export default SideEffectsStackRoute;

@@ -121,7 +121,7 @@ const replaceReminderFn = (id: string, newRem: Reminder) => (state: ReminderStor
 const addReminderFn = (rem: Reminder, notifids: string[]) => (state: ReminderStoreState) => {
   rem.id = uuidv4()
   rem.notificationids = notifids
-  state.reminders.push(rem)
+  state.reminders.unshift(rem) // push to beginning
   state.reminders.sort()
 }
 

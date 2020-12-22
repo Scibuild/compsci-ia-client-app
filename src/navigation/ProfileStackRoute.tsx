@@ -41,6 +41,7 @@ const ProfileStackRoute: React.FC<{}> = () => {
   );
 };
 
+
 const viewHeaderRight = (navigation: StackNavigationProp<ProfileParamsList, "View">, profile: ProfileItem[]) => () => {
   return (
     <HeaderButtonContainer>
@@ -55,16 +56,4 @@ const viewHeaderRight = (navigation: StackNavigationProp<ProfileParamsList, "Vie
     </HeaderButtonContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  headerButtonContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginRight: 10,
-  },
-  headerButton: {
-    margin: 8,
-  },
-});
-
 export default ProfileStackRoute;

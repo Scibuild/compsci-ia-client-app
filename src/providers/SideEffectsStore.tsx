@@ -9,8 +9,9 @@ export type SideEffectsStoreState = {
   sideEffects: SideEffect[],
   addSideEffect: (name: string, instance: SideEffectInstance) => void,
   editSideEffectName: (id: string, newName: string) => void,
-  editSideEffectInstance: (id: string, instanceid: string, newInstance: SideEffectInstance) => void,
-  deleteSideEffectById: (id: string) => void
+  editSideEffectInstance: (id: string, instanceid: string, newInstance: Partial<SideEffectInstance>) => void,
+  deleteSideEffectById: (id: string) => void,
+  deleteSideEffectInstance: (id: string, instanceid: string) => void
 }
 
 export interface SideEffect {
@@ -50,6 +51,7 @@ export const useSideEffectStore = create<SideEffectsStoreState>(persist((set) =>
   editSideEffectName: (id, newName) => set(produce(editSideEffectName(id, newName))),
   editSideEffectInstance: (id, instanceid, newInstance) => set(produce(editSideEffectInstance(id, instanceid, newInstance))),
   deleteSideEffectById: (id) => set(produce(deleteSideEffectById(id))),
+  deleteSideEffectInstance: (id, instanceid) => set(produce(deleteSideEffectInstance(id, instanceid))),
 }), {
   name: 'sideEffects',
   storage: AsyncStorage
@@ -60,7 +62,7 @@ const addSideEffect = (name: string, instance: SideEffectInstance) => (state: Si
   instance.id = uuidv4()
   if (index >= 0) {
     state.sideEffects[index].instances.push(instance);
-    state.sideEffects[index].instances.sort((a, b) => a.time - b.time)
+    state.sideEffects[index].instances.sort((a, b) => b.time - a.time)
   } else {
     state.sideEffects.push({
       name,
@@ -76,7 +78,7 @@ const editSideEffectName = (id: string, newName: string) => (state: SideEffectsS
   state.sideEffects[index].name = newName
   state.sideEffects.sort((a, b) => a.name.localeCompare(b.name))
 }
-const editSideEffectInstance = (id: string, instanceid: string, newInstance: SideEffectInstance) => (state: SideEffectsStoreState) => {
+const editSideEffectInstance = (id: string, instanceid: string, newInstance: Partial<SideEffectInstance>) => (state: SideEffectsStoreState) => {
   const sideeffect = state.sideEffects.find((s) => s.id === id);
   if (sideeffect === undefined) { return }
   const instanceindex = sideeffect.instances.map(i => i.id).indexOf(instanceid)
@@ -88,4 +90,14 @@ const editSideEffectInstance = (id: string, instanceid: string, newInstance: Sid
 
 const deleteSideEffectById = (id: string) => (state: SideEffectsStoreState) => {
   state.sideEffects = state.sideEffects.filter(item => item.id !== id);
+}
+
+const deleteSideEffectInstance = (id: string, instanceid: string) => (state: SideEffectsStoreState) => {
+  const sideEffect = state.sideEffects.find(v => v.id === id);
+  if (sideEffect === undefined) { return }
+  if (sideEffect.instances.length === 1) {
+    state.sideEffects = state.sideEffects.filter(item => item.id !== id);
+  } else {
+    sideEffect.instances = sideEffect?.instances.filter(v => v.id !== instanceid)
+  }
 }
