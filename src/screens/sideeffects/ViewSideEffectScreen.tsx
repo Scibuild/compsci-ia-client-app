@@ -1,6 +1,6 @@
 import React from "react";
-import { View, Text, Button, StyleSheet, Slider, Alert } from "react-native";
-import { ItemSeparator, Container, BigText, BoldText } from "../../components/formatted";
+import { View, Text, StyleSheet, Slider, Alert } from "react-native";
+import { ItemSeparator, BigText, BoldText } from "../../components/formatted";
 import { SideEffectInstance, useSideEffectStore } from "../../providers/SideEffectsStore";
 import { FlatList, RectButton } from "react-native-gesture-handler";
 import { SideEffectsParamList } from "../../navigation/SideEffectsStackRoute";
@@ -10,7 +10,6 @@ import { formatDate } from "../../lib/formatdate";
 import { HeaderButton, HeaderButtonContainer } from "../../components/HeaderButton";
 import { useCustomBackButton } from '../../hooks/useBackButton';
 import { TouchableListItem } from "../../components/TouchableListItem";
-import { produce } from 'immer';
 import { AntDesign } from '@expo/vector-icons';
 
 export interface ViewSideEffectScreenProps {

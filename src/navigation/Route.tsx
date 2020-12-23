@@ -9,7 +9,9 @@ preinit();
 export const MainRoute: React.FC<{}> = () => {
   return (
     <NavigationContainer>
+      {/* <MenuProvider> */}
       <MainTabs />
+      {/* </MenuProvider> */}
     </NavigationContainer>
   );
 };
