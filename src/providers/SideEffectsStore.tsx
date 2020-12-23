@@ -24,6 +24,7 @@ export interface SideEffectInstance {
   time: number,
   severity: number,
   id?: string,
+  currentMedication: string[]
 }
 
 const initialState: SideEffect[] = [
@@ -31,16 +32,16 @@ const initialState: SideEffect[] = [
     name: "Aching Leg",
     id: uuidv4(),
     instances: [
-      { time: new Date().getTime(), severity: 7, id: uuidv4() },
-      { time: new Date().getTime(), severity: 5, id: uuidv4() },
+      { time: new Date().getTime(), severity: 7, id: uuidv4(), currentMedication: [] },
+      { time: new Date().getTime(), severity: 5, id: uuidv4(), currentMedication: [] },
     ],
   },
   {
     name: "Missing Head",
     id: uuidv4(),
     instances: [
-      { time: new Date().getTime(), severity: 10, id: uuidv4() },
-      { time: new Date().getTime(), severity: 3, id: uuidv4() },
+      { time: new Date().getTime(), severity: 10, id: uuidv4(), currentMedication: [] },
+      { time: new Date().getTime(), severity: 3, id: uuidv4(), currentMedication: [] },
     ],
   },
 ];

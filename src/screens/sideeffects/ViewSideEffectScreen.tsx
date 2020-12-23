@@ -122,7 +122,16 @@ const InstanceItem: React.FC<InstanceItemProps> = ({ instance, editSideEffectIns
           {tempSeverity}
         </BoldText> </BigText>
       </View>
-      {showDetails && !editMode && <Text>Details</Text>}
+      {showDetails && !editMode &&
+        <View>
+          <BoldText>
+            Active medication:
+        </BoldText>
+
+          {instance.currentMedication?.map((v, i) => (
+            <Text key={i}> {`\t\t\t\u2022\t${v}\n`}</Text>
+          ))}
+        </View>}
       {editMode &&
         <>
           <View>

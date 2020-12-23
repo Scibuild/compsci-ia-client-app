@@ -7,7 +7,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { SideEffectsParamList } from "../../navigation/SideEffectsStackRoute";
 import { Entypo } from "@expo/vector-icons";
 import { RectButton } from "react-native-gesture-handler";
-import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
+import Menu, { MenuItem } from 'react-native-material-menu';
 import { confirmDeleteAlert } from "./ViewSideEffectScreen";
 import { ChangeSideEffectNameModal } from '../../components/ChangeSideEffectNameModal';
 

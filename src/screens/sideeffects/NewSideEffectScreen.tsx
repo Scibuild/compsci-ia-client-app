@@ -15,6 +15,7 @@ import { Picker } from "@react-native-community/picker";
 import { FormattedTextInput } from "../../components/formatted";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { SideEffectsParamList } from "../../navigation/SideEffectsStackRoute";
+import { useReminderStore } from "../../providers/RemindersStore";
 
 interface DateTimePickerCPProps {
   value: Date,
@@ -82,6 +83,9 @@ type NewSideEffectScreenProp = {
 export const NewSideEffectScreen: React.FC<NewSideEffectScreenProp> = ({ navigation }) => {
   const sideEffects = useSideEffectStore(s => s.sideEffects)
   const addSideEffect = useSideEffectStore(s => s.addSideEffect)
+
+  const reminders = useReminderStore(s => s.reminders);
+  const activeDrugs = reminders.filter(v => v.enabled).map(v => v.drug);
 
   const [time, setTime] = useState(new Date());
   const [severity, setSeverity] = useState(5);
@@ -157,6 +161,7 @@ export const NewSideEffectScreen: React.FC<NewSideEffectScreenProp> = ({ navigat
                   {
                     time: time.getTime(),
                     severity: severity,
+                    currentMedication: activeDrugs
                   });
                 navigation.goBack();
               } else {
