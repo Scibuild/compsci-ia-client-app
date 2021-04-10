@@ -7,27 +7,18 @@ import { AlertFooter, AlertFooterButton, CustomAlertModal } from './CustomAlertM
 export interface SpreadTimeModalProps {
   visible: boolean,
   setVisible: (visible: boolean) => void,
-  beginningTime: string,
-  setBeginningTime: (beginningTime: string) => void,
-  endTime: string,
-  setEndTime: (endTime: string) => void,
-  number: string,
-  setNumber: (number: string) => void,
   setTimes: (times: string[]) => void,
 }
 
 export const SpreadTimesModal: React.FC<SpreadTimeModalProps> = (
   { visible,
     setVisible,
-    beginningTime,
-    setBeginningTime,
-    endTime,
-    setEndTime,
-    number,
-    setNumber,
     setTimes
   }
 ) => {
+  const [beginningTime, setBeginningTime] = React.useState("")
+  const [endTime, setEndTime] = React.useState("")
+  const [number, setNumber] = React.useState("")
   return (
     <CustomAlertModal setVisible={setVisible} visible={visible}>
       <BoldText><BigText>Daily repeats</BigText></BoldText>
@@ -65,7 +56,6 @@ export const SpreadTimesModal: React.FC<SpreadTimeModalProps> = (
       </AlertFooter>
     </CustomAlertModal>
   )
-
 }
 
 function calculateTimes(beginningTime: string, endTime: string, number: string): string[] {
