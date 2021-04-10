@@ -10,6 +10,7 @@ import { RectButton } from "react-native-gesture-handler";
 import Menu, { MenuItem } from 'react-native-material-menu';
 import { confirmDeleteAlert } from "./ViewSideEffectScreen";
 import { ChangeSideEffectNameModal } from '../../components/ChangeSideEffectNameModal';
+import { BigText } from "../../components/formatted";
 
 export interface SideEffectListItemProps {
   navigation: StackNavigationProp<SideEffectsParamList, "History">,
@@ -33,11 +34,11 @@ export const SideEffectListItem: React.FC<SideEffectListItemProps> = ({ name, id
         }}
       >
         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-          <Text style={styles.listItemText}>{name}</Text>
+          <BigText>{name}</BigText>
           <Menu
             ref={r => menuRef.current = r}
             button={
-              <RectButton style={{ padding: 7 }} onPress={() => { menuRef.current?.show(); }}>
+              <RectButton style={{ padding: 3 }} onPress={() => { menuRef.current?.show(); }}>
                 <Entypo name="dots-three-vertical" size={20} color="#555" />
               </RectButton>
             }
@@ -63,15 +64,6 @@ export const SideEffectListItem: React.FC<SideEffectListItemProps> = ({ name, id
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  listItemTouchable: {
-    padding: 10,
-  },
-  listItemText: {
-    fontSize: 20,
-  },
-});
 
 export interface SideEffectHistoryScreenProps {
   navigation: StackNavigationProp<SideEffectsParamList, "History">
