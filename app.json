@@ -1,29 +1,22 @@
 {
   "expo": {
-    "name": "client-app",
-    "slug": "client-app",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
+    "name": "BPDCA",
+    "slug": "big-pharmas-data-collection-app",
+    "platforms": ["ios", "android", "web"],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
+    },
+    "android": {
+      "package": "org.scibuild.bpdca",
+      "versionCode": 1,
+      "useNextNotificationsApi": true,
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
