@@ -41,9 +41,9 @@ const MainTabs: React.FC<{}> = () => {
         keyboardHidesTabBar: Platform.OS == "ios" ? false : true,
       }}
     >
+      <Tabs.Screen name="Reminders" component={ReminderStackRoute} />
       <Tabs.Screen name="SideEffects" component={SideEffectsStackRoute} />
       <Tabs.Screen name="Profile" component={ProfileStackRoute} />
-      <Tabs.Screen name="Reminders" component={ReminderStackRoute} />
     </Tabs.Navigator>
   );
 };
