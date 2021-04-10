@@ -21,30 +21,13 @@ export interface SideEffect {
 }
 
 export interface SideEffectInstance {
-  time: number,
+  time: number, // due to serialisation, it is easier to store as number and convert as needed
   severity: number,
   id?: string,
   currentMedication: string[]
 }
 
-const initialState: SideEffect[] = [
-  {
-    name: "Aching Leg",
-    id: uuidv4(),
-    instances: [
-      { time: new Date().getTime(), severity: 7, id: uuidv4(), currentMedication: [] },
-      { time: new Date().getTime(), severity: 5, id: uuidv4(), currentMedication: [] },
-    ],
-  },
-  {
-    name: "Missing Head",
-    id: uuidv4(),
-    instances: [
-      { time: new Date().getTime(), severity: 10, id: uuidv4(), currentMedication: [] },
-      { time: new Date().getTime(), severity: 3, id: uuidv4(), currentMedication: [] },
-    ],
-  },
-];
+const initialState: SideEffect[] = [];
 
 export const useSideEffectStore = create<SideEffectsStoreState>(persist((set) => ({
   sideEffects: initialState,
