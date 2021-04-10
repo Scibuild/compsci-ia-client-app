@@ -45,7 +45,7 @@ export const ViewSideEffectScreen: React.FC<ViewSideEffectScreenProps> = ({ rout
     }
     return true;
   }, [editMode]);
-  useCustomBackButton(onBackPress, [editMode], navigation.setOptions);
+  useCustomBackButton(onBackPress, navigation.setOptions);
 
 
 

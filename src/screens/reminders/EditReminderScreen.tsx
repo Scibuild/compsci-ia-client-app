@@ -5,11 +5,12 @@ import { RemindersParamList } from "../../navigation/RemindersStackRoute";
 import { BigText, KeyboardAvoidingScrollView } from "../../components/formatted";
 import { FormattedTextInput } from "../../components/formatted";
 import { RouteProp } from "@react-navigation/native";
-import { ReminderTimeFromString, ReminderTimeToString, useReminderStore } from "../../providers/RemindersStore";
+import { ReminderTime, ReminderTimeFromString, ReminderTimeToString, useReminderStore } from "../../providers/RemindersStore";
 import { useCustomBackButton } from '../../hooks/useBackButton';
 import { TextInputList } from '../../components/TextInputList';
 import { SpreadTimesModal } from "../../components/SpreadTimesModal";
 import { timeRE } from "../../lib/regularExpressions";
+import { TimeSelector } from "../../components/TimeSelector";
 
 
 type EditRemindersScreenProp = {
@@ -32,24 +33,25 @@ export const EditReminderScreen: React.FC<EditRemindersScreenProp> = ({ navigati
   const [times, setTimes] = React.useState<string[]>(() => reminder?.times == null ? [] : reminder.times.map(ReminderTimeToString));
 
   const [timeModalVisible, setTimeModalVisible] = React.useState(false)
-  const [beginningTime, setbeginningTime] = React.useState("")
-  const [endTime, setEndTime] = React.useState("")
-  const [drugCount, setDrugCount] = React.useState("")
 
   const replaceReminder = useReminderStore(state => state.replaceReminder)
   const addReminder = useReminderStore(state => state.addReminder)
   const deleteReminder = useReminderStore(state => state.deleteReminder)
 
+  const [newTime, setNewTime] = React.useState(null);
 
-  const onBackPress = React.useCallback(() => {
+  const onBackPress = () => {
     if (id == "") {
       navigation.goBack()
       return true;
     }
     let filledOut = true;
+    // needs to be filled in
     filledOut &&= drug.trim() !== "";
     filledOut &&= instructions.trim() !== "";
+    // all of the time need to match the timeRE regular expression
     filledOut &&= times.every(time => timeRE.test(time.trim()))
+    // if not all the conditions are met, exit out
     if (!filledOut) { return true; }
     const newReminder = {
       drug,
@@ -61,9 +63,9 @@ export const EditReminderScreen: React.FC<EditRemindersScreenProp> = ({ navigati
     replaceReminder(id, newReminder);
     navigation.goBack()
     return true;
-  }, [instructions, drug, times /*, repeatEveryDays */])
+  };
 
-  useCustomBackButton(onBackPress, [instructions, drug, times], navigation.setOptions)
+  useCustomBackButton(onBackPress, navigation.setOptions)
 
   return (
     <KeyboardAvoidingScrollView>
@@ -108,6 +110,7 @@ export const EditReminderScreen: React.FC<EditRemindersScreenProp> = ({ navigati
           marginTop: 30,
         }}
       >
+        <TimeSelector time={newTime} setTime={setNewTime} />
         <Button title="Generate Times" onPress={() => setTimeModalVisible(true)} />
 
 
@@ -122,7 +125,7 @@ export const EditReminderScreen: React.FC<EditRemindersScreenProp> = ({ navigati
               instructions,
               // repeatEveryDays: Number(repeatEveryDays),
               enabled: true,
-              times: []
+              times: times.map(ReminderTimeFromString)
             };
             addReminder(newReminder);
             navigation.goBack()
@@ -132,12 +135,6 @@ export const EditReminderScreen: React.FC<EditRemindersScreenProp> = ({ navigati
       <SpreadTimesModal
         visible={timeModalVisible}
         setVisible={setTimeModalVisible}
-        beginningTime={beginningTime}
-        setBeginningTime={setbeginningTime}
-        endTime={endTime}
-        setEndTime={setEndTime}
-        number={drugCount}
-        setNumber={setDrugCount}
         setTimes={setTimes}
       />
     </KeyboardAvoidingScrollView>
