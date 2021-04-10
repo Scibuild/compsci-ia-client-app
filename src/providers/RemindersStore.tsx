@@ -49,12 +49,20 @@ type ReminderStoreState = {
   addReminder: (rem: Reminder) => void,
   replaceReminder: (id: string, rem: Reminder) => void,
 }
+
 export const useReminderStore = create<ReminderStoreState>(persist((set, get) => ({
   reminders: initialState,
+  // to abstract the notification system complexity, all the state management and
+  // notification management is performed by the same function call
+  // for each of these methods, first perform the notification change in the OS
+  // then change the app state using the reference the OS has given us to its
+  // notification, so we can cancel the notification later
+  // we label the notification functions with 'Notif' and the state ones as 'Fn'
   toggleReminder: async (id: string) => {
     const notifids = await toggleReminderNotif(id, get().reminders);
     set(produce(toggleReminderFn(id, notifids)))
   },
+  // similar for the others
   deleteReminder: async (id: string) => {
     cancelNotifications(get().reminders.find(r => r.id === id))
     set(produce(deleteReminderFn(id)))
@@ -74,9 +82,10 @@ export const useReminderStore = create<ReminderStoreState>(persist((set, get) =>
   storage: AsyncStorage,
   // re-registers all notifications when the current reminders are loaded from storage, 
   // (on app startup), ensures notifications are always in sync with displayed data
-  // default serialisation is with JSON, so JSON.parse converts back
+  // default serialisation is with JSON, so JSON.parse converts back to JS
   deserialize: async (stored) => {
     const state = JSON.parse(stored)
+    // ensures there are no duplicate notifications
     Notifications.cancelAllScheduledNotificationsAsync();
     //both updates notification ids and creates new notifs
     return initialiseAllNotifications(state)
@@ -127,11 +136,18 @@ const addReminderFn = (rem: Reminder, notifids: string[]) => (state: ReminderSto
 
 const initialiseAllNotifications = async (state: ReminderStoreState) => {
   // Promise.all converts an array of promises into a promise for an array
+  // Because some of the reminders might require intialising notifications
+  // which is asyncronous, we evaluate all the promises at the same time
+  // 
   state.reminders = await Promise.all(state.reminders.map(async (rem) => {
+
+    // don't enable a reminder if it is disabled
     if (!rem.enabled) {
       return rem;
     }
+    // initialise the notifications and get the new ids
     const notifids = await initialiseNotifications(rem);
+    // update the notification ids in the object and return
     rem.notificationids = notifids;
     return rem
   }));
@@ -139,22 +155,31 @@ const initialiseAllNotifications = async (state: ReminderStoreState) => {
   return state
 }
 
+// core abstraction for adding notifications
 async function initialiseNotifications(reminder?: Reminder): Promise<string[]> {
+  // because scheduling notifications is asyncronous, the id they return
+  // will be a promise so we store the list of all promises and evaluate them together
   const notifids: Promise<string>[] = [];
-  // eslint-disable-next-line no-unused-expressions
+
+  // iterate through all the times the user has added to the reminder
   reminder?.times.forEach(time => {
+    // function interfaces with the OS notification system
     const notifid = Notifications.scheduleNotificationAsync({
       content: {
         title: reminder?.drug,
         body: reminder?.instructions,
+        // milliseconds to delay, then milliseconds to vibrate
         vibrate: [0, 100]
       },
+      // when to show the notification
       trigger: {
         hour: time.hour,
         minute: time.minute,
+        // ensures repeats every day
         repeats: true
       },
     });
+    // store the id in the notification ids
     notifids.push(notifid)
   });
   return Promise.all(notifids);
@@ -170,9 +195,9 @@ async function initialiseNotificationsIfEnabled(reminder?: Reminder, enabled?: b
 
 
 async function cancelNotifications(reminder?: Reminder) {
-  // eslint-disable-next-line no-unused-expressions
-  reminder?.notificationids?.forEach(element => {
-    Notifications.cancelScheduledNotificationAsync(element)
-  });
+  // for each notifiaction id run the cancel function, because the argument is the item
+  // in the list we don't have to explicitly write a new function, we can pass the cancel
+  // function straight through
+  reminder?.notificationids?.forEach(Notifications.cancelScheduledNotificationAsync);
 }
 

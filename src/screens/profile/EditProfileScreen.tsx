@@ -30,20 +30,21 @@ export const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation
   const setField = useProfileStore(setFieldSelector);
 
   React.useEffect(() => {
-    return dropProfileChanges; // drop changes on unload
+    return dropProfileChanges; // leave edit mode if leave screen and changes not saved
   }, []);
 
   const onBackPress = useCallback(() => {
-    const saved = temporaryProfile.length === 0;
+    const saved = temporaryProfile.length === 0; // whether in edit mode
     if (!saved) {
+      // if it isn't saved, don't let the user leave if they don't want to
       unsavedAlert(navigation);
     } else {
       navigation.goBack();
     }
     return true;
-  }, [temporaryProfile.length]);
+  }, [temporaryProfile.length]); // rebuild function if edit mode changes (is saved)
 
-  useCustomBackButton(onBackPress, [temporaryProfile.length], navigation.setOptions);
+  useCustomBackButton(onBackPress, navigation.setOptions);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -55,18 +56,20 @@ export const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation
     });
   }, []);
 
+  // render either the profile or temp profile depending on whether we are in edit mode
   const profileToRender = temporaryProfile.length === 0 ? profile : temporaryProfile;
   return (
     <KeyboardAvoidingScrollView>
-      {profileToRender.map(({ name, id, value }) => (
-        <ProfileItemEdit
-          name={name}
-          key={id}
-          value={value}
-          onChangeText={setField(id)}
-          onChangeAnyText={startProfileChanges}
-        />
-      ))}
+      { // create a text box or text box list for every field in the profile
+        profileToRender.map(({ name, id, value }) => (
+          <ProfileItemEdit
+            name={name}
+            key={id}
+            value={value}
+            onChangeText={setField(id) /* returns a function to set the field for this text box*/}
+            onChangeAnyText={startProfileChanges /* if any text box is changed make sure to automatically go into edit mode */}
+          />
+        ))}
       {/* <Button title="State broken" onPress={rebuildState} /> */}
     </KeyboardAvoidingScrollView>
   );

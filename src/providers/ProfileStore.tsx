@@ -42,9 +42,11 @@ const initialState: { profile: ProfileItem[], temporaryProfile: ProfileItem[] } 
 };
 
 
+// 'create' is from Zustand and creates the function we can use to access the state
+// 'persist' is part of Zustand and will persist the state whenever it is changed
 export const useProfileStore = create<ProfileStoreState>(persist((set) => ({
-  profile: initialState.profile,
-  temporaryProfile: initialState.temporaryProfile,
+  profile: initialState.profile, // the real profile
+  temporaryProfile: initialState.temporaryProfile, // the editable profile before changes are saved
   commitProfileChanges: () => set(produce(commitProfileChanges)),
   startProfileChanges: () => set(produce(startProfileChanges)),
   dropProfileChanges: () => set(produce(dropProfileChanges)),
@@ -56,27 +58,37 @@ export const useProfileStore = create<ProfileStoreState>(persist((set) => ({
 }))
 
 const commitProfileChanges = (state: ProfileStoreState) => {
+  // as long as we are in edit mode (there are items in the temp profile)
   if (state.temporaryProfile.length !== 0) {
+    // set the profile to the temp profile and erase the temp profile to exit edit mode
     state.profile = state.temporaryProfile;
     state.temporaryProfile = [];
   }
 }
 const startProfileChanges = (state: ProfileStoreState) => {
+  // if we are not in edit mode
   if (state.temporaryProfile.length === 0) {
-    state.temporaryProfile = state.profile // immer should handle the deep clone here
+    // normally setting an array to another array doesn't clone it but just means you have
+    // two variables that point to the same thing and editing the temp profile would also 
+    // change the normal profile. Because I am using Immer, there will automatically be a 
+    // deep clone so we do not have to worry about this
+    state.temporaryProfile = state.profile
   }
 }
 const dropProfileChanges = (state: ProfileStoreState) => {
+  // exit edit mode but dont change the profile
   state.temporaryProfile = []
 }
 const setField = (fieldName: string, fieldValue: string | string[]) => (state: ProfileStoreState) => {
-  if (state.temporaryProfile.length === 0) { return }
+  if (state.temporaryProfile.length === 0) { return } // ensure we are in edit mode
+  // points to the field object that the user has edited
   const field = state.temporaryProfile.find((f) => f.id === fieldName);
-  if (field === undefined) { return }
-  field.value = fieldValue;
+  if (field === undefined) { return } // if it doesn't exist don't error out, just silently return
+  field.value = fieldValue; // update the field with the new value
 }
 
 const rebuildState = (state: ProfileStoreState) => {
+  // only run in emergencies to set everything back to normal
   state.profile = initialState.profile;
   state.temporaryProfile = [];
 }
