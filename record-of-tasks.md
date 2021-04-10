@@ -19,4 +19,4 @@
 
 - client requests a feature to store medication they are taking
 - needs name, frequency and amount
-
+- this is turned into the reminders feature
